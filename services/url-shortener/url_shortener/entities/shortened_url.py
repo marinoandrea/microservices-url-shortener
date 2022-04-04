@@ -31,6 +31,8 @@ def make_url(data: dict) -> ShortenedURL:
     """
     entity = make_unique_entity(data)
 
+    print(data)
+
     if (
         'original_address' not in data or
         type(data['original_address']) != str or
@@ -47,5 +49,5 @@ def make_url(data: dict) -> ShortenedURL:
     return ShortenedURL(
         **asdict(entity),
         original_address=data['original_address'],
-        short_id=data['short_id'] or cuid.slug()
+        short_id=data.get('short_id', cuid.slug())
     )

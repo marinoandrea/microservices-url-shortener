@@ -44,7 +44,7 @@ def make_unique_entity(data: dict) -> UniqueEntity:
         raise ValidationError("A UniqueEntity must contain a valid timestamp for updated_at.")
 
     return UniqueEntity(
-        id=data['id'] or uuid.uuid4(),
-        created_at=data['created_at'] or time_ms,
-        updated_at=data['updated_at'] or time_ms
+        id=data.get('id', uuid.uuid4()),
+        created_at=data.get('created_at', time_ms),
+        updated_at=data.get('updated_at', time_ms)
     )
