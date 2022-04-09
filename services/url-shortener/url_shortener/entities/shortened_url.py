@@ -31,8 +31,6 @@ def make_url(data: dict) -> ShortenedURL:
     """
     entity = make_unique_entity(data)
 
-    print(data)
-
     if (
         'original_address' not in data or
         type(data['original_address']) != str or
