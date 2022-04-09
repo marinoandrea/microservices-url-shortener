@@ -8,7 +8,7 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
     data: dict[str, ShortenedURL]
 
     def __init__(self):
-       self.data = {}
+        self.data = {}
 
     def find_by_original_address(self, addr: str) -> Optional[ShortenedURL]:
         for surl in self.data.values():
@@ -24,10 +24,9 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
             if surl.short_id == id:
                 return surl
         return None
-       # return self.data.get(id, None)
 
-    def get_all_ids(self):
-        output=[]
+    def get_all_ids(self) -> list[str]:
+        output = []
         for surl in self.data.values():
             output.append(surl.short_id)
         return output

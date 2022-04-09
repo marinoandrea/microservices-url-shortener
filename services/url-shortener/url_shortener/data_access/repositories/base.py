@@ -26,6 +26,5 @@ class IShortenedURLRepository(IRepository):
         ...
 
     @abstractmethod
-    def get_all_ids(self):
+    def get_all_ids(self) -> list[str]:
         ...
-    
