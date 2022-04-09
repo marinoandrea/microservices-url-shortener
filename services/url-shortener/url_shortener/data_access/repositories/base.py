@@ -24,3 +24,8 @@ class IShortenedURLRepository(IRepository):
     @abstractmethod
     def insert(self, url: ShortenedURL):
         ...
+
+    @abstractmethod
+    def get_all_ids(self):
+        ...
+    
