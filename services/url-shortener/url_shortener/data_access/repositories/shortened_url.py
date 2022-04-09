@@ -2,6 +2,7 @@ from typing import Optional
 
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
 from url_shortener.entities.shortened_url import ShortenedURL
+from url_shortener.errors import DataAccessError
 
 
 class InMemoryShortenedURLRepository(IShortenedURLRepository):
@@ -17,6 +18,9 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
         return None
 
     def insert(self, url: ShortenedURL):
+        for surl in self.data.values():
+            if surl.short_id == url.short_id:
+                raise DataAccessError("This short id is already in use. Collision detected.")
         self.data[url.id] = url
 
     def find_by_id(self, id: str) -> Optional[ShortenedURL]:
