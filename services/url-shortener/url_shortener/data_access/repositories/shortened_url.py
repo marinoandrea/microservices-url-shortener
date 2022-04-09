@@ -24,8 +24,11 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
         self.data[url.id] = url
 
     def find_by_id(self, id: str) -> Optional[ShortenedURL]:
+        return self.data.get(id, None)
+
+    def find_by_short_id(self, short_id: str) -> Optional[ShortenedURL]:
         for surl in self.data.values():
-            if surl.short_id == id:
+            if surl.short_id == short_id:
                 return surl
         return None
 

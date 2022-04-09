@@ -14,6 +14,14 @@ class IRepository(ABC, Generic[T]):
     def find_by_id(self, id: str) -> Optional[T]:
         ...
 
+    @abstractmethod
+    def insert(self, url: T):
+        ...
+
+    @abstractmethod
+    def delete(self, id: str):
+        ...
+
 
 class IShortenedURLRepository(IRepository):
 
@@ -22,9 +30,9 @@ class IShortenedURLRepository(IRepository):
         ...
 
     @abstractmethod
-    def insert(self, url: ShortenedURL):
+    def get_all_ids(self) -> list[str]:
         ...
 
     @abstractmethod
-    def get_all_ids(self) -> list[str]:
+    def find_by_short_id(self, short_id: str) -> Optional[ShortenedURL]:
         ...
