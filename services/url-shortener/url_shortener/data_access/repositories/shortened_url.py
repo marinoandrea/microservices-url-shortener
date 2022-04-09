@@ -20,7 +20,8 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
     def insert(self, url: ShortenedURL):
         for surl in self.data.values():
             if surl.short_id == url.short_id:
-                raise DataAccessError("This short id is already in use. Collision detected.")
+                raise DataAccessError(
+                    "This short id is already in use. Collision detected.")
         self.data[url.id] = url
 
     def find_by_id(self, id: str) -> Optional[ShortenedURL]:
@@ -36,4 +37,18 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
         output = []
         for surl in self.data.values():
             output.append(surl.short_id)
-        return output
+        return
+
+    def delete(self, id: str):
+        self.data.pop(id)
+
+    def delete_by_short_id(self, short_id: str):
+        target = None
+        for surl in self.data.values():
+            if surl.short_id == short_id:
+                target = surl
+                break
+        if target is None:
+            return DataAccessError(
+                "There is no url associated with this short id.")
+        self.data.pop(target.id)

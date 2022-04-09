@@ -36,3 +36,7 @@ class IShortenedURLRepository(IRepository):
     @abstractmethod
     def find_by_short_id(self, short_id: str) -> Optional[ShortenedURL]:
         ...
+
+    @abstractmethod
+    def delete_by_short_id(self, short_id: str):
+        ...
