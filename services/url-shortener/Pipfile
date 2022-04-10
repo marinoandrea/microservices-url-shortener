@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 cuid = "*"
+python-dotenv = "*"
 
 [dev-packages]
 flake8 = "*"
