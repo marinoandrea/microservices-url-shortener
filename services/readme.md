@@ -18,7 +18,7 @@ npm start
 
 The workflow for running the project is:
 1. install pipenv globally on the machine
-2. go in the url-shortener folder of the project and run pipenv install --dev to install all dependencies(the url-shortener folder is the one where there is a Pipenv file)
+2. go to the url-shortener folder of the project and run pipenv install --dev to install all dependencies(the url-shortener folder is the one where there is a Pipenv file)
 3. run it with 'pipenv run flask run'
 
 
