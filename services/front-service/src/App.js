@@ -1,11 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import ListUrlShortenerComponent from './components/ListUrlShortenerComponent';
-import HeaderComponent from './components/HeaderComponent';
-import FooterComponent from './components/FooterComponent';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CreateUrlShortenerComponent from './components/CreateUrlShortenerComponent';
+import FooterComponent from './components/FooterComponent';
+import HeaderComponent from './components/HeaderComponent';
+import ListUrlShortenerComponent from './components/ListUrlShortenerComponent';
 import UpdateUrlShortenerComponent from './components/UpdateUrlShortenerComponent';
 import ViewUrlShortenerComponent from './components/ViewUrlShortenerComponent';
 
