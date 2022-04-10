@@ -39,7 +39,7 @@ def make_url(data: dict) -> ShortenedURL:
             data['original_address']
         ) is None
     ):
-        raise ValidationError("A ShortenedURL must contain a valid address.")
+        raise ValidationError("A ShortenedURL must contain a valid address. Starting with a protocol (http[s]).")
 
     if 'short_id' in data and type(data['short_id']) != str:
         raise ValidationError("A ShortenedURL must contain a valid short id.")
