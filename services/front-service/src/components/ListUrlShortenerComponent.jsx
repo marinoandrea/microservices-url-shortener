@@ -59,6 +59,7 @@ class ListUrlShortenerComponent extends Component {
             <thead>
               <tr>
                 <th>Url Shortener Id</th>
+                <th>Shortened URL</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -66,6 +67,15 @@ class ListUrlShortenerComponent extends Component {
               {this.state.urlShorteners.map((urlShortener) => (
                 <tr key={urlShortener}>
                   <td>{urlShortener}</td>
+                  <td>
+                    <a
+                      href={`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                    </a>
+                  </td>
                   {/*<td>{urlShortener.original_address}</td>*/}
                   <td>
                     <button
@@ -81,15 +91,6 @@ class ListUrlShortenerComponent extends Component {
                     >
                       Delete
                     </button>
-                    <a
-                      href={`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
-                      target="_blank"
-                      style={{ marginLeft: "10px" }}
-                      className="btn btn-info"
-                      rel="noopener noreferrer"
-                    >
-                      View
-                    </a>
                   </td>
                 </tr>
               ))}
