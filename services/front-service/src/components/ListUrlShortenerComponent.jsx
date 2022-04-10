@@ -1,84 +1,104 @@
-import React, { Component } from 'react'
-import UrlShortenerService from '../services/UrlShortenerService'
+import React, { Component } from "react";
+import UrlShortenerService, {
+  URL_SHORTENER_API_BASE_URL,
+} from "../services/UrlShortenerService";
 
 class ListUrlShortenerComponent extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props);
 
-        this.state = {
-                urlShorteners: []
-        }
-        this.addUrlShortener = this.addUrlShortener.bind(this);
-        this.editUrlShortener = this.editUrlShortener.bind(this);
-        this.deleteUrlShortener = this.deleteUrlShortener.bind(this);
-    }
+    this.state = {
+      urlShorteners: [],
+      error: "",
+      errorTimestamp: -1,
+    };
+    this.addUrlShortener = this.addUrlShortener.bind(this);
+    this.editUrlShortener = this.editUrlShortener.bind(this);
+    this.deleteUrlShortener = this.deleteUrlShortener.bind(this);
+  }
 
-    deleteUrlShortener(id){
-        UrlShortenerService.deleteUrlShortenerById(id).then( res => {
-            this.setState({urlShorteners: this.state.urlShorteners.filter(urlShortener => urlShortener.id !== id)});
-        });
-    }
-    viewUrlShortener(id){
-        this.props.history.push(`/view-url-shortener/${id}`);
-    }
-    editUrlShortener(id){
-        this.props.history.push(`/update-url-shortener/${id}`);
-    }
+  deleteUrlShortener(id) {
+    UrlShortenerService.deleteUrlShortenerById(id).then((res) => {
+      this.setState({
+        urlShorteners: this.state.urlShorteners.filter(
+          (urlShortener) => urlShortener !== id
+        ),
+      });
+    });
+  }
 
-    componentDidMount(){
-        UrlShortenerService.getUrlShortener().then((res) => {
-            if (res.data){
-                this.setState({ urlShorteners: res.data});
-            }
-        });
-        
-    }
+  editUrlShortener(id) {
+    this.props.history.push(`/update-url-shortener/${id}`);
+  }
 
-    addUrlShortener(){
-        this.props.history.push('/add-url-shortener');
-    }
+  componentDidMount() {
+    UrlShortenerService.getUrlShortener().then((res) => {
+      console.log(res);
+      if (res.data) {
+        this.setState({ urlShorteners: res.data });
+      }
+    });
+  }
 
-    render() {
-        return (
-            <div>
-                 <h2 className="text-center">Url Shortener List</h2>
-                 <div className = "row">
-                    <button className="btn btn-primary" onClick={this.addUrlShortener}> Add UrlShortener</button>
-                 </div>
-                 <br></br>
-                 <div className = "row">
-                        <table className = "table table-striped table-bordered">
+  addUrlShortener() {
+    this.props.history.push("/add-url-shortener");
+  }
 
-                            <thead>
-                                <tr>
-                                    <th> Url Shortener Id</th>
-                                    <th> Url Address</th>
-                                    <th> Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.state.urlShorteners.map(
-                                        urlShortener => 
-                                        <tr key = {urlShortener.id}>
-                                             <td> {urlShortener.id} </td>   
-                                             <td> {urlShortener.urlAddress}</td>
-                                             <td>
-                                                 <button onClick={ () => this.editUrlShortener(urlShortener.id)} className="btn btn-info">Update </button>
-                                                 <button style={{marginLeft: "10px"}} onClick={ () => this.deleteUrlShortener(urlShortener.id)} className="btn btn-danger">Delete </button>
-                                                 <button style={{marginLeft: "10px"}} onClick={ () => this.viewUrlShortener(urlShortener.id)} className="btn btn-info">View </button>
-                                             </td>
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-
-                 </div>
-
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div>
+        <h2 className="text-center">Url Shortener List</h2>
+        <div className="row">
+          <button className="btn btn-primary" onClick={this.addUrlShortener}>
+            Add UrlShortener
+          </button>
+        </div>
+        <br></br>
+        <div className="row">
+          <table className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Url Shortener Id</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.urlShorteners.map((urlShortener) => (
+                <tr key={urlShortener}>
+                  <td>{urlShortener}</td>
+                  {/*<td>{urlShortener.original_address}</td>*/}
+                  <td>
+                    <button
+                      onClick={() => this.editUrlShortener(urlShortener)}
+                      className="btn btn-info"
+                    >
+                      Update
+                    </button>
+                    <button
+                      style={{ marginLeft: "10px" }}
+                      onClick={() => this.deleteUrlShortener(urlShortener)}
+                      className="btn btn-danger"
+                    >
+                      Delete
+                    </button>
+                    <a
+                      href={`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                      target="_blank"
+                      style={{ marginLeft: "10px" }}
+                      className="btn btn-info"
+                      rel="noopener noreferrer"
+                    >
+                      View
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default ListUrlShortenerComponent
+export default ListUrlShortenerComponent;

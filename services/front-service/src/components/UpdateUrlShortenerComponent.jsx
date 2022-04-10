@@ -1,73 +1,83 @@
-import React, { Component } from 'react'
-import UrlShortenerService from '../services/UrlShortenerService';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import UrlShortenerService from "../services/UrlShortenerService";
+import AlertToast from "./AlertToast";
 
 class UpdateUrlShortenerComponent extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            id: this.props.match.params.id,
-            urlAddress: ''
-        }
-        this.changeUrlAddressHandler = this.changeUrlAddressHandler.bind(this);
-        this.updateUrlShortener = this.updateUrlShortener.bind(this);
-    }
+    this.state = {
+      id: this.props.match.params.id,
+      urlAddress: "",
+      error: "",
+      errorTimestamp: -1,
+    };
+    this.changeUrlAddressHandler = this.changeUrlAddressHandler.bind(this);
+    this.updateUrlShortener = this.updateUrlShortener.bind(this);
+  }
 
-    componentDidMount(){
-        UrlShortenerService.getUrlById(this.state.id).then( (res) =>{
-            let urlShortener = res.data;
-            this.setState({urlAddress: urlShortener.urlAddress,
-                id: urlShortener.id,
-            });
-        });
-    }
+  updateUrlShortener = (e) => {
+    e.preventDefault();
+    UrlShortenerService.updateUrlShortener(this.state.urlAddress, this.state.id)
+      .then(() => {
+        this.props.history.push("/url-shortener-list");
+      })
+      .catch((e) => {
+        this.setState({ error: e.response.data, errorTimestamp: Date.now() });
+      });
+  };
 
-    updateUrlShortener = (e) => {
-        e.preventDefault();
-        let urlShortener = {urlAddress: this.state.urlAddress, id: this.state.id};
-        console.log('urlShortener => ' + JSON.stringify(urlShortener));
-        console.log('id => ' + JSON.stringify(this.state.id));
-        UrlShortenerService.updateUrlShortener(urlShortener.urlAddress, this.state.id).then( res => {
-            this.props.history.push('/url-shortener-list');
-        });
-    }
-    
-    changeUrlAddressHandler= (event) => {
-        this.setState({urlAddress: event.target.value});
-    }
+  changeUrlAddressHandler = (event) => {
+    this.setState({ urlAddress: event.target.value });
+  };
 
-    cancel(){
-        this.props.history.push('/url-shortener-list');
-    }
+  render() {
+    return (
+      <div>
+        <AlertToast
+          error={this.state.error}
+          errorTimestamp={this.state.errorTimestamp}
+        />
 
-    render() {
-        return (
-            <div>
-                <br></br>
-                   <div className = "container">
-                        <div className = "row">
-                            <div className = "card col-md-6 offset-md-3 offset-md-3">
-                                <h3 className="text-center">Update Url Shortener</h3>
-                                <div className = "card-body">
-                                    <form>
-                                        <div className = "form-group">
-                                            <label> Url Address: </label>
-                                            <input placeholder="Url Address" name="urlAddress" className="form-control" 
-                                                value={this.state.urlAddress} onChange={this.changeUrlAddressHandler}/>
-                                        </div>
-                                    
+        <div className="container">
+          <div className="row">
+            <div className="card col-md-6 offset-md-3 offset-md-3">
+              <h3 className="text-center">Update Url Shortener</h3>
+              <div className="card-body">
+                <form>
+                  <div className="form-group">
+                    <label>New Url Address: </label>
+                    <input
+                      placeholder="Url Address"
+                      name="urlAddress"
+                      className="form-control"
+                      value={this.state.urlAddress}
+                      onChange={this.changeUrlAddressHandler}
+                    />
+                  </div>
 
-                                        <button className="btn btn-success" onClick={this.updateUrlShortener}>Save</button>
-                                        <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                   </div>
+                  <button
+                    className="btn btn-success"
+                    onClick={this.updateUrlShortener}
+                  >
+                    Save
+                  </button>
+                  <Link
+                    to="/url-shortener-list"
+                    className="btn btn-danger"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Cancel
+                  </Link>
+                </form>
+              </div>
             </div>
-        )
-    }
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default UpdateUrlShortenerComponent
+export default UpdateUrlShortenerComponent;
