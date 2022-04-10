@@ -10,10 +10,6 @@ def build_create_url(shortened_url_repo: IShortenedURLRepository):
         This function allows to create shortened urls entities
         which are then stored from an original url string.
         """
-        record = shortened_url_repo.find_by_original_address(original_address)
-        if record is not None:
-            return record
-
         while True:
             # we keep generating short ids inside the make_url function
             # until we don't get collisions anymore.

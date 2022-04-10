@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, jsonify, redirect, request
 from url_shortener.errors import ValidationError
-from url_shortener.use_cases import create_url, delete_url, get_ids, get_url
+from url_shortener.use_cases import (create_url, delete_url, get_ids, get_url,
+                                     update_url)
 
 blueprint = Blueprint('core', __name__, url_prefix='/')
 
@@ -53,4 +54,12 @@ def route_url(id: str):
         return "", 204
 
     if request.method == 'PUT':
-        raise NotImplementedError()
+        # validate user request
+        original_address = request.json.get('url')
+        if original_address is None:
+            raise ValidationError(
+                "The body of the request must contain a 'url' field.")
+        # create a shortened url
+        url = update_url(id, original_address)
+        # return a json representation of the entity
+        return jsonify(url), 201

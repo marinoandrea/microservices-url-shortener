@@ -1,7 +1,8 @@
+from dataclasses import asdict
 from typing import Optional
 
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
-from url_shortener.entities.shortened_url import ShortenedURL
+from url_shortener.entities.shortened_url import ShortenedURL, make_url
 from url_shortener.errors import DataAccessError
 
 
@@ -37,7 +38,7 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
         output = []
         for surl in self.data.values():
             output.append(surl.short_id)
-        return
+        return output
 
     def delete(self, id: str):
         self.data.pop(id)
@@ -52,3 +53,21 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
             return DataAccessError(
                 "There is no url associated with this short id.")
         self.data.pop(target.id)
+
+    def update(self, id: str, data: dict) -> ShortenedURL:
+        raise NotImplementedError()
+
+    def update_by_short_id(self, short_id: str, data: dict) -> ShortenedURL:
+        target = None
+        for surl in self.data.values():
+            if surl.short_id == short_id:
+                target = surl
+                break
+        if target is None:
+            return DataAccessError(
+                "There is no url associated with this short id.")
+        self.data[target.id] = make_url({
+            **asdict(target),
+            **data
+        })
+        return self.data[target.id]

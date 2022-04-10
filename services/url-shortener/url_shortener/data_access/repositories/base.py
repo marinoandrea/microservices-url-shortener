@@ -22,6 +22,10 @@ class IRepository(ABC, Generic[T]):
     def delete(self, id: str):
         ...
 
+    @abstractmethod
+    def update(self, id: str, data: dict) -> ShortenedURL:
+        ...
+
 
 class IShortenedURLRepository(IRepository):
 
@@ -39,4 +43,8 @@ class IShortenedURLRepository(IRepository):
 
     @abstractmethod
     def delete_by_short_id(self, short_id: str):
+        ...
+
+    @abstractmethod
+    def update_by_short_id(self, short_id: str, data: dict) -> ShortenedURL:
         ...
