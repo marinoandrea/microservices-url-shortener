@@ -13,6 +13,9 @@ def create_app(config_file='./config.py'):
     @app.after_request
     def after_request(response: Response):
         response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+        response.headers.add('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         return response
 
     return app

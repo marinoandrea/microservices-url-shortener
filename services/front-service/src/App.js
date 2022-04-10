@@ -1,0 +1,33 @@
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import ListUrlShortenerComponent from './components/ListUrlShortenerComponent';
+import HeaderComponent from './components/HeaderComponent';
+import FooterComponent from './components/FooterComponent';
+import CreateUrlShortenerComponent from './components/CreateUrlShortenerComponent';
+import UpdateUrlShortenerComponent from './components/UpdateUrlShortenerComponent';
+import ViewUrlShortenerComponent from './components/ViewUrlShortenerComponent';
+
+function App() {
+  return (
+    <div>
+        <Router>
+              <HeaderComponent />
+                <div className="container">
+                    <Switch> 
+                          <Route path = "/" exact component = {ListUrlShortenerComponent}></Route>
+                          <Route path = "/url-shortener-list" component = {ListUrlShortenerComponent}></Route>
+                          <Route path = "/add-url-shortener" component = {CreateUrlShortenerComponent}></Route>
+                          <Route path = "/view-url-shortener/:id" component = {ViewUrlShortenerComponent}></Route>
+                          <Route path = "/update-url-shortener/:id" component = {UpdateUrlShortenerComponent}></Route>
+                    </Switch>
+                </div>
+              <FooterComponent />
+        </Router>
+    </div>
+    
+  );
+}
+
+export default App;
