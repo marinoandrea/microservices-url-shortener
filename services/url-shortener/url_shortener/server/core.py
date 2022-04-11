@@ -1,11 +1,10 @@
 from flask import Blueprint, abort, jsonify, redirect, request
-from flask_cors import CORS
 from url_shortener.errors import DataAccessError, ValidationError
 from url_shortener.use_cases import (create_url, delete_url, get_ids, get_url,
                                      update_url)
 
 blueprint = Blueprint('core', __name__, url_prefix='/')
-CORS(blueprint)
+# CORS(blueprint)
 
 
 @blueprint.errorhandler(ValidationError)
