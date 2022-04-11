@@ -1,6 +1,7 @@
 
 from flask import Flask, Response
 
+from .core import blueprint as core_blueprint
 from .extensions import cors
 
 
@@ -22,8 +23,7 @@ def create_app(config_file='./config.py'):
 
 
 def register_blueprints(app):
-    # app.register_blueprint(core_blueprint)
-    pass
+    app.register_blueprint(core_blueprint)
 
 
 def register_extensions(app):
