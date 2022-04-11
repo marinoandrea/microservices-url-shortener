@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from time import time
 from typing import Optional
 
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
@@ -68,6 +69,7 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
                 "There is no url associated with this short id.")
         self.data[target.id] = make_url({
             **asdict(target),
-            **data
+            **data,
+            "updated_at": int(time.time() * 1000)
         })
         return self.data[target.id]
