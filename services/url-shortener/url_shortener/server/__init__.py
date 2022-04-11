@@ -10,6 +10,7 @@ def create_app(config_file='./config.py'):
     app.config.from_pyfile(config_file)
 
     register_blueprints(app)
+    register_extensions(app)
 
     @app.after_request
     def after_request(response: Response):
