@@ -50,7 +50,7 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
                 target = surl
                 break
         if target is None:
-            return DataAccessError(
+            raise DataAccessError(
                 "There is no url associated with this short id.")
         self.data.pop(target.id)
 
@@ -64,7 +64,7 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
                 target = surl
                 break
         if target is None:
-            return DataAccessError(
+            raise DataAccessError(
                 "There is no url associated with this short id.")
         self.data[target.id] = make_url({
             **asdict(target),

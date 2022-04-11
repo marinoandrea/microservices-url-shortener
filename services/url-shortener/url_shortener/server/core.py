@@ -1,9 +1,11 @@
 from flask import Blueprint, abort, jsonify, redirect, request
-from url_shortener.errors import ValidationError
+from flask_cors import CORS
+from url_shortener.errors import DataAccessError, ValidationError
 from url_shortener.use_cases import (create_url, delete_url, get_ids, get_url,
                                      update_url)
 
 blueprint = Blueprint('core', __name__, url_prefix='/')
+CORS(blueprint)
 
 
 @blueprint.errorhandler(ValidationError)
@@ -49,7 +51,7 @@ def route_url(id: str):
     if request.method == 'DELETE':
         try:
             delete_url(id)
-        except ValidationError:
+        except DataAccessError:
             abort(404)
         return "", 204
 
@@ -60,6 +62,9 @@ def route_url(id: str):
             raise ValidationError(
                 "The body of the request must contain a 'url' field.")
         # create a shortened url
-        url = update_url(id, original_address)
+        try:
+            url = update_url(id, original_address)
+        except DataAccessError:
+            abort(404)
         # return a json representation of the entity
         return jsonify(url), 201
