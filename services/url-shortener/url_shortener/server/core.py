@@ -49,6 +49,9 @@ def route_url(id: str):
         return redirect(url.original_address)
 
     if request.method == 'DELETE':
+        url = get_url(id)
+        if url is None:
+            abort(404)
         try:
             delete_url(id)
         except DataAccessError:
@@ -56,6 +59,9 @@ def route_url(id: str):
         return "", 204
 
     if request.method == 'PUT':
+        url = get_url(id)
+        if url is None:
+            abort(404)
         # validate user request
         original_address = request.json.get('url')
         if original_address is None:
