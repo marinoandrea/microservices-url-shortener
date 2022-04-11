@@ -1,5 +1,5 @@
+import time
 from dataclasses import asdict
-from time import time
 from typing import Optional
 
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
