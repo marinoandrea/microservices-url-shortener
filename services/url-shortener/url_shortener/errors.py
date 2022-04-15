@@ -4,3 +4,7 @@ class ValidationError(Exception):
 
 class DataAccessError(Exception):
     pass
+
+
+class AuthorizationError(Exception):
+    pass
