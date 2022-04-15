@@ -8,6 +8,9 @@ flask = "*"
 cuid = "*"
 python-dotenv = "*"
 flask-cors = "*"
+pyjwt = "*"
+cryptography = "*"
+requests = "*"
 
 [dev-packages]
 flake8 = "*"
