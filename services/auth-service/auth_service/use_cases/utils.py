@@ -1,6 +1,5 @@
 import hashlib
-import random
-import string
+import os
 from abc import ABC, abstractmethod
 
 SALT_ROUNDS = 16
@@ -20,9 +19,11 @@ class PBKDF2PasswordHasher(IPasswordHasher):
 
     def __init__(self) -> None:
         self.rounds = SALT_ROUNDS
-        self.salt = ''.join(
-            random.choice(string.ascii_letters)
-            for i in range(SALT_LENGTH))
+        self.salt = os.getenv("PASSWORD_SALT")
+
+        if self.salt is None:
+            raise RuntimeError(
+                "A 'PASSWORD_SALT' env variable must be defined.")
 
     def hash_password(self, password: str) -> str:
         return hashlib.pbkdf2_hmac("sha512", password, self.salt, self.rounds)\
