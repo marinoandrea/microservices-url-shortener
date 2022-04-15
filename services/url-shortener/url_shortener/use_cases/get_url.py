@@ -10,6 +10,15 @@ def build_get_url(shortened_url_repo: IShortenedURLRepository):
         """
         Retrieves a shortened url entity given its unique
         short id.
+
+        Params
+        ------
+        short_id: `str`
+        Short identifier for the URL.
+
+        Returns
+        -------
+        `Optional[ShortenedURL]`
         """
         return shortened_url_repo.find_by_short_id(short_id)
 

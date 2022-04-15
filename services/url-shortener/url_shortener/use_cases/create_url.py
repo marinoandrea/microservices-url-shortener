@@ -5,17 +5,32 @@ from url_shortener.errors import DataAccessError
 
 def build_create_url(shortened_url_repo: IShortenedURLRepository):
 
-    def create_url(original_address: str) -> ShortenedURL:
+    def create_url(user_id: str, original_address: str) -> ShortenedURL:
         """
-        This function allows to create shortened urls entities
-        which are then stored from an original url string.
+        Creates a shortened url entity which is then stored inside
+        the service's persistence layer.
+
+        Params
+        ------
+        user_id: `str`
+        Identifier for the user which requested the update.
+
+        original_address: `str`
+        Redirect address that the URL should point to.
+
+        Returns
+        -------
+        `ShortenedURL`
         """
         while True:
             # we keep generating short ids inside the make_url function
             # until we don't get collisions anymore.
             # not particularly efficient but safe
             try:
-                url = make_url({'original_address': original_address})
+                url = make_url({
+                    'user_id': user_id,
+                    'original_address': original_address,
+                })
                 shortened_url_repo.insert(url)
                 break
             except DataAccessError:
