@@ -14,6 +14,7 @@ class ShortenedURL(UniqueEntity):
     """
     original_address: str
     short_id: str
+    user_id: str
 
 
 def make_url(data: dict) -> ShortenedURL:
@@ -39,13 +40,19 @@ def make_url(data: dict) -> ShortenedURL:
             data['original_address']
         ) is None
     ):
-        raise ValidationError("A ShortenedURL must contain a valid address. Starting with a protocol (http[s]).")
+        raise ValidationError(
+            """A ShortenedURL must contain a valid address.
+            Starting with a protocol (http[s]).""")
 
     if 'short_id' in data and type(data['short_id']) != str:
         raise ValidationError("A ShortenedURL must contain a valid short id.")
 
+    if 'user_id' in data and type(data['user_id']) != str:
+        raise ValidationError("A ShortenedURL must contain a valid user id.")
+
     return ShortenedURL(
         **asdict(entity),
         original_address=data['original_address'],
-        short_id=data.get('short_id', cuid.slug())
+        short_id=data.get('short_id', cuid.slug()),
+        user_id=data['user_id']
     )
