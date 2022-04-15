@@ -48,3 +48,7 @@ class IShortenedURLRepository(IRepository):
     @abstractmethod
     def update_by_short_id(self, short_id: str, data: dict) -> ShortenedURL:
         ...
+
+    @abstractmethod
+    def get_all_ids_by_user(self, user_id: str) -> list[str]:
+        ...

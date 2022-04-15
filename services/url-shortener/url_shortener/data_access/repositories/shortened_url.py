@@ -73,3 +73,11 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
             "updated_at": int(time.time() * 1000)
         })
         return self.data[target.id]
+
+    def get_all_ids_by_user(self, user_id: str) -> list[str]:
+        output = []
+        for surl in self.data.values():
+            if surl.user_id != user_id:
+                continue
+            output.append(surl.short_id)
+        return output
