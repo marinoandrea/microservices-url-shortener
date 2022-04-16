@@ -11,7 +11,7 @@ class User(UniqueEntity):
     Represents a shortened URL record.
     """
     username: str
-    password: str
+    password: bytes
 
 
 def make_user(data: dict) -> User:
@@ -33,7 +33,7 @@ def make_user(data: dict) -> User:
         raise ValidationError("A user must have a valid username.")
 
     # we expect the password to be hashed by the business logic
-    if ("password" not in data or type(data["password"]) != str):
+    if ("password" not in data or type(data["password"]) != bytes):
         raise ValidationError("A user must have a valid password.")
 
     return User(
