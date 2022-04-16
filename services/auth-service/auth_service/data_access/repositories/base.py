@@ -28,4 +28,7 @@ class IRepository(ABC, Generic[T]):
 
 
 class IUserRepository(IRepository[User]):
-    ...
+
+    @abstractmethod
+    def find_by_username(self, username: str) -> Optional[User]:
+        ...

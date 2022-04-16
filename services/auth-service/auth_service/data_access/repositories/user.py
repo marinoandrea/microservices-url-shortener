@@ -11,12 +11,11 @@ class InMemoryUserRepository(IUserRepository):
     def __init__(self):
         self.data = {}
 
-    def insert(self, url: User):
-        for surl in self.data.values():
-            if surl.short_id == url.short_id:
-                raise DataAccessError(
-                    "This short id is already in use. Collision detected.")
-        self.data[url.id] = url
+    def insert(self, new_user: User):
+        for user in self.data.values():
+            if user.username == new_user.username:
+                raise DataAccessError("This username is already in use.")
+        self.data[new_user.id] = new_user
 
     def find_by_id(self, id: str) -> Optional[User]:
         return self.data.get(id, None)
@@ -26,3 +25,9 @@ class InMemoryUserRepository(IUserRepository):
 
     def update(self, id: str, data: dict) -> User:
         raise NotImplementedError()
+
+    def find_by_username(self, username: str) -> Optional[User]:
+        for user in self.data.values():
+            if user.username == username:
+                return user
+        return None
