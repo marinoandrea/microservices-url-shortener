@@ -9,6 +9,22 @@ def build_create_user(
 ):
 
     def create_user(username: str, password: str) -> User:
+        """
+        Creates a user entity with hashed credentials
+        which is then stored inside the service's persistence layer.
+
+        Params
+        ------
+        username: `str`
+        Unique string name provided by the user.
+
+        password: `str`
+        Password provided by the user.
+
+        Returns
+        -------
+        `User`
+        """
         hashed_password = password_hasher.hash_password(password)
         user = make_user({'username': username, 'password': hashed_password})
         user_repository.insert(user)
