@@ -1,5 +1,5 @@
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
-from url_shortener.errors import AuthorizationError, ValidationError
+from url_shortener.errors import AuthorizationError, DataAccessError
 
 
 def build_delete_url(shortened_url_repo: IShortenedURLRepository):
@@ -11,7 +11,7 @@ def build_delete_url(shortened_url_repo: IShortenedURLRepository):
         Params
         ------
         user_id: `str`
-        Identifier for the user which requested the update.
+        Identifier for the user which requested the deletion.
 
         short_id: `str`
         Short identifier for the URL.
@@ -19,7 +19,7 @@ def build_delete_url(shortened_url_repo: IShortenedURLRepository):
         url = shortened_url_repo.find_by_short_id(short_id)
 
         if url is None:
-            raise ValidationError("This url does not exist.")
+            raise DataAccessError("This url does not exist.")
 
         if url.user_id != user_id:
             raise AuthorizationError(
