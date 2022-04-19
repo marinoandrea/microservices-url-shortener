@@ -1,5 +1,6 @@
 import os
 from abc import ABC, abstractmethod
+from time import sleep
 from typing import Optional
 
 import jwt
@@ -26,6 +27,7 @@ class PyJWTTokenManager(ITokenManager):
         res = requests.get(f"{auth_service_url}/users/jwt/public-keys")
         while res.status_code != 200:
             res = requests.get(f"{auth_service_url}/users/jwt/public-keys")
+            sleep(0.1)
 
         # NOTE: in this simple scenario we know that we are getting a single
         # key with ID "0", however we should store the entire dictionary with
