@@ -15,8 +15,11 @@ token_manager: ITokenManager = PyJWTTokenManager()
 
 
 def parse_authorization_header(request: Request) -> Optional[dict]:
-    header = request.headers['Authorization']
-    if header is None:
+    try:
+        header = request.headers.get('Authorization', None)
+        if header is None:
+            return None
+    except KeyError:
         return None
     token = header.removeprefix("Bearer ")
     return token_manager.decode_token(token)
