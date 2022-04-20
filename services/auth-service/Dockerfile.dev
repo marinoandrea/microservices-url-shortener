@@ -2,7 +2,7 @@
 
 FROM python:3.9-slim
 
-ENV APP_DIR /usr/local/src/url-shortener/auth-service
+ENV APP_DIR /usr/local/src/auth-service
 
 COPY . ${APP_DIR}/
 
