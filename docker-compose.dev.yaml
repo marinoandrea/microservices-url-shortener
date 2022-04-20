@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  auth:
+    build:
+      context: services/auth-service
+      dockerfile: Dockerfile.dev
+    ports:
+      - 5001:5000
+    environment:
+      - RSA_PRIVATE_PATH=${RSA_PRIVATE_PATH}
+      - RSA_PUBLIC_PATH=${RSA_PUBLIC_PATH}
+      - PASSWORD_SALT=${PASSWORD_SALT}
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - ./services/auth-service:/usr/local/src/auth-service
+
+  shortener:
+    build:
+      context: services/url-shortener
+      dockerfile: Dockerfile.dev
+    ports:
+      - 5000:5000
+    environment:
+      - AUTH_SERVICE_URL=http://auth:5000
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    depends_on:
+      - auth
+    volumes:
+      - ./services/url-shortener:/usr/local/src/url-shortener

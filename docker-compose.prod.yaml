@@ -4,19 +4,25 @@ services:
   auth:
     build:
       context: services/auth-service
+      dockerfile: Dockerfile.prod
     ports:
-      - "5001:5000"
+      - 5001:5000
     environment:
       - RSA_PRIVATE_PATH=${RSA_PRIVATE_PATH}
       - RSA_PUBLIC_PATH=${RSA_PUBLIC_PATH}
       - PASSWORD_SALT=${PASSWORD_SALT}
+    volumes:
+      - ./services/auth-service:/usr/local/src/auth-service
 
   shortener:
     build:
       context: services/url-shortener
+      dockerfile: Dockerfile.prod
     ports:
-      - "5000:5000"
+      - 5000:5000
     environment:
       - AUTH_SERVICE_URL=http://auth:5000
     depends_on:
       - auth
+    volumes:
+      - ./services/url-shortener:/usr/local/src/url-shortener
