@@ -1,5 +1,6 @@
 from auth_service.data_access.repositories.base import IUserRepository
 from auth_service.entities.user import User, make_user
+from auth_service.errors import DataAccessError, ValidationError
 from auth_service.use_cases.utils import IPasswordHasher
 
 
@@ -27,7 +28,12 @@ def build_create_user(
         """
         hashed_password = password_hasher.hash_password(password)
         user = make_user({'username': username, 'password': hashed_password})
-        user_repository.insert(user)
+
+        try:
+            user_repository.insert(user)
+        except DataAccessError:
+            raise ValidationError("This username is already in use.")
+
         return user
 
     return create_user
