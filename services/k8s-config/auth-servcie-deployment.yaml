@@ -1,0 +1,21 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: auth-servcie-deployment 
+  labels: 
+    app: auth-servcie-app 
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: auth-servcie 
+  template: 
+    metadata: 
+      labels: 
+        app: auth-servcie 
+    spec: 
+      containers: 
+      - name: auth-servcie-container 
+        image: wangjycode/wscbs-project_auth:v1 
+        ports: 
+        - containerPort: 5000 
