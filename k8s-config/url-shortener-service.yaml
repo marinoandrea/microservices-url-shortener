@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-service
+  name: url-shortener
 spec:
   type: LoadBalancer
   ports:
@@ -9,4 +9,4 @@ spec:
       port: 5000
       targetPort: 5000
   selector:
-    app: auth-service-app
+    app: url-shortener-app

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-service-deployment
+  labels:
+    app: front-service-app
+    kubernetes.io/name: front-service
+    kubernetes.io/component: frontend
+    kubernetes.io/version: "1.0.0"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: front-service-app
+  template:
+    metadata:
+      labels:
+        app: front-service-app
+    spec:
+      containers:
+        - name: front-service-container
+          image: marinoandrea/wscbs-front-service:1.0
+          resources:
+            limits:
+              cpu: 2
+              memory: 1Gi
+          ports:
+            - containerPort: 80
