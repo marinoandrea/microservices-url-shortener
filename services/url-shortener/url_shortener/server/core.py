@@ -5,8 +5,8 @@ from flask_cors import CORS
 from url_shortener.errors import (AuthorizationError, DataAccessError,
                                   ValidationError)
 from url_shortener.server.authz import ITokenManager, PyJWTTokenManager
-from url_shortener.use_cases import (create_url, delete_url, get_ids, get_url,
-                                     update_url)
+from url_shortener.use_cases import (create_url, delete_url, delete_user_urls,
+                                     get_ids, get_url, update_url)
 
 blueprint = Blueprint('core', __name__, url_prefix='/')
 CORS(blueprint)
@@ -45,7 +45,7 @@ def handle_unauthorized_request(e):
     return str(e), 403
 
 
-@blueprint.route("/", methods=['POST', 'GET'])
+@blueprint.route("/", methods=['POST', 'GET', 'DELETE'])
 def route_urls():
     """
     This route handles CRUD operations on the entire
@@ -67,6 +67,10 @@ def route_urls():
     if request.method == 'GET':
         output = jsonify(get_ids(user_id))
         return output, 200
+
+    if request.method == 'DELETE':
+        output = delete_user_urls(user_id)
+        return "", 204
 
 
 @blueprint.route("/<string:id>", methods=['GET', 'PUT', 'DELETE'])
