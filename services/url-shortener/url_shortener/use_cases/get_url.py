@@ -5,7 +5,7 @@ from url_shortener.errors import AuthorizationError, DataAccessError
 
 def build_get_url(shortened_url_repo: IShortenedURLRepository):
 
-    def get_url(user_id: str, short_id: str) -> ShortenedURL:
+    def get_url(short_id: str) -> ShortenedURL:
         """
         Retrieves a shortened url entity given its unique
         short id.
@@ -26,10 +26,6 @@ def build_get_url(shortened_url_repo: IShortenedURLRepository):
 
         if url is None:
             raise DataAccessError("This url does not exist.")
-
-        if url.user_id != user_id:
-            raise AuthorizationError(
-                "You are not authorized to access this url.")
 
         return url
 

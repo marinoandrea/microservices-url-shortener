@@ -81,3 +81,11 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
                 continue
             output.append(surl.short_id)
         return output
+
+    def delete_by_user_id(self, user_id: str):
+        target_ids = []
+        for surl in self.data.values():
+            if surl.user_id == user_id:
+                target_ids.append(surl.id)
+        for url_id in target_ids:
+            self.data.pop(url_id)

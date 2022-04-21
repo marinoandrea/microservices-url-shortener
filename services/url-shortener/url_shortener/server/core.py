@@ -5,8 +5,8 @@ from flask_cors import CORS
 from url_shortener.errors import (AuthorizationError, DataAccessError,
                                   ValidationError)
 from url_shortener.server.authz import ITokenManager, PyJWTTokenManager
-from url_shortener.use_cases import (create_url, delete_url, get_ids, get_url,
-                                     update_url)
+from url_shortener.use_cases import (create_url, delete_url, delete_user_urls,
+                                     get_ids, get_url, update_url)
 
 blueprint = Blueprint('core', __name__, url_prefix='/')
 CORS(blueprint)
@@ -45,7 +45,7 @@ def handle_unauthorized_request(e):
     return str(e), 403
 
 
-@blueprint.route("/", methods=['POST', 'GET'])
+@blueprint.route("/", methods=['POST', 'GET', 'DELETE'])
 def route_urls():
     """
     This route handles CRUD operations on the entire
@@ -68,6 +68,10 @@ def route_urls():
         output = jsonify(get_ids(user_id))
         return output, 200
 
+    if request.method == 'DELETE':
+        output = delete_user_urls(user_id)
+        return "", 204
+
 
 @blueprint.route("/<string:id>", methods=['GET', 'PUT', 'DELETE'])
 def route_url(id: str):
@@ -76,14 +80,14 @@ def route_url(id: str):
     of the resource 'shortened url' uniquely identified by
     the :id url parameter.
     """
-    user_id = get_user_id(request)
-
     if request.method == 'GET':
         try:
-            url = get_url(user_id, id)
+            url = get_url(id)
         except DataAccessError:
             abort(404)
         return redirect(url.original_address)
+
+    user_id = get_user_id(request)
 
     if request.method == 'DELETE':
         try:
