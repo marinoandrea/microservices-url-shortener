@@ -76,14 +76,14 @@ def route_url(id: str):
     of the resource 'shortened url' uniquely identified by
     the :id url parameter.
     """
-    user_id = get_user_id(request)
-
     if request.method == 'GET':
         try:
-            url = get_url(user_id, id)
+            url = get_url(id)
         except DataAccessError:
             abort(404)
         return redirect(url.original_address)
+
+    user_id = get_user_id(request)
 
     if request.method == 'DELETE':
         try:
