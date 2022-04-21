@@ -52,3 +52,7 @@ class IShortenedURLRepository(IRepository):
     @abstractmethod
     def get_all_ids_by_user(self, user_id: str) -> list[str]:
         ...
+
+    @abstractmethod
+    def delete_by_user_id(self, user_id: str):
+        ...
