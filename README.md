@@ -1,8 +1,8 @@
 # Web Services and Cloud-Based Systems - Group 4
 
-This project contains 3 sub-projects: `auth-service`, `front-service` and `url-shortener`.
+This project contains 3 sub-projects: `nginx-entrypoint`,`auth-service`, `front-service` and `url-shortener`.
 
-The `url-shortener` is a Flask web service that exposes RESTful interfaces. Similarly, the `auth-service` is a Flask web service dedicated to user authentication and JWT generation. The `front-service` is a simple React.js single-page application which is used for testing API consumption on a GUI.
+The `url-shortener` is a Flask web service that exposes RESTful interfaces. Similarly, the `auth-service` is a Flask web service dedicated to user authentication and JWT generation. The `front-service` is a simple React.js single-page application which is used for testing API consumption on a GUI.The `nginx-entrypoint` is a simple gateway that provides one entry point for all our microservices.
 
 ## Running the services
 
@@ -28,3 +28,4 @@ docker-compose -f docker-compose.prod.yaml up
 # or
 docker-compose -f docker-compose.dev.yaml up
 ```
+After service start up, you can use host:3000/users to request the auth services and host:3000/shortener to request url-shortener services.
