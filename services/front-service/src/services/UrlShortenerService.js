@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const URL_SHORTENER_API_BASE_URL = "http://localhost:5000";
+export const URL_SHORTENER_API_BASE_URL = "http://localhost:3000/urlshortener";
 
 class UrlShortenerService {
   getUrlShortener() {
