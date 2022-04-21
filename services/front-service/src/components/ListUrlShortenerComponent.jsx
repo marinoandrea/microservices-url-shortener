@@ -28,20 +28,21 @@ class ListUrlShortenerComponent extends Component {
   }
 
   editUrlShortener(id) {
-    this.props.history.push(`/update-url-shortener/${id}`);
+    this.props.history.push(`/home/update-url-shortener/${id}`);
   }
 
   componentDidMount() {
     UrlShortenerService.getUrlShortener().then((res) => {
       console.log(res);
       if (res.data) {
-        this.setState({ urlShorteners: res.data });
+        this.setState({ 
+            urlShorteners: res.data });
       }
     });
   }
 
   addUrlShortener() {
-    this.props.history.push("/add-url-shortener");
+    this.props.history.push("/home/add-url-shortener");
   }
 
   render() {
@@ -73,7 +74,7 @@ class ListUrlShortenerComponent extends Component {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                      {`${window.location.host}${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
                     </a>
                   </td>
                   {/*<td>{urlShortener.original_address}</td>*/}

@@ -5,7 +5,7 @@ import FooterComponent from "./components/FooterComponent";
 import HeaderComponent from "./components/HeaderComponent";
 import ListUrlShortenerComponent from "./components/ListUrlShortenerComponent";
 import UpdateUrlShortenerComponent from "./components/UpdateUrlShortenerComponent";
-
+import CheckLoginComponent from "./components/CheckLoginComponent"
 function App() {
   return (
     <div>
@@ -13,17 +13,17 @@ function App() {
         <HeaderComponent />
         <div className="container" style={{ padding: 20 }}>
           <Switch>
-            <Route path="/" exact component={ListUrlShortenerComponent}></Route>
+            <Route path="/home" exact component={ListUrlShortenerComponent}></Route>
             <Route
-              path="/url-shortener-list"
+              path="/home/url-shortener-list"
               component={ListUrlShortenerComponent}
             ></Route>
             <Route
-              path="/add-url-shortener"
+              path="/home/add-url-shortener"
               component={CreateUrlShortenerComponent}
             ></Route>
             <Route
-              path="/update-url-shortener/:id"
+              path="/home/update-url-shortener/:id"
               component={UpdateUrlShortenerComponent}
             ></Route>
           </Switch>
