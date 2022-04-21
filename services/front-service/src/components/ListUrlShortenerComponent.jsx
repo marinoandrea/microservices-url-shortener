@@ -32,7 +32,6 @@ class ListUrlShortenerComponent extends Component {
   }
 
   componentDidMount() {
-
     UrlShortenerService.getUrlShortener().then((res) => {
       console.log(res);
       if (res.data) {

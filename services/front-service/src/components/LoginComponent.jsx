@@ -7,7 +7,7 @@ class LoginComponent extends Component {
   componentDidMount() {
     let localStorage = window.localStorage
     if (localStorage.token) {
-      this.props.history.replace('/home')
+      this.props.history.replace('/home');
     }
   }
     
@@ -26,9 +26,10 @@ class LoginComponent extends Component {
     e.preventDefault();
     UserService.login(this.state.username,this.state.password)
       .then((res) => {
-        this.props.history.replace('/home')
-        window.localStorage.islogin = '1'
+        
         window.localStorage.token=res.data.token
+        this.props.history.replace('/home');
+        this.props.history.go();
       })
       .catch((e) => {
         this.setState({ error: e.response.data, errorTimestamp: Date.now() });

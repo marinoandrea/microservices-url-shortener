@@ -40,8 +40,10 @@ def route_users():
     """
     username, password = validate_user_request_body(request)
 
-    user = create_user(username, password)
-
+    try:
+        user = create_user(username, password)
+    except ValidationError as e:
+        return str(e), 403
     output = asdict(user)
     output.pop("password")  # remove the hash for security
 
