@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const URL_SHORTENER_API_BASE_URL = "/urlshortener";
+export const URL_SHORTENER_API_BASE_URL = "/shortener";
 var instance = axios.create({
     headers: {
         common: {        // can be common or any other method

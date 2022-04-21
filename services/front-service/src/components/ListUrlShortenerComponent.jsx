@@ -74,7 +74,7 @@ class ListUrlShortenerComponent extends Component {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {`${urlShortener}`}
+                      {`${window.location.host}${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
                     </a>
                   </td>
                   {/*<td>{urlShortener.original_address}</td>*/}

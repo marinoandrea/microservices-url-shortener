@@ -9,10 +9,10 @@ module.exports = function (app) {
         })
     
     ),
-    app.use('/urlshortener',
+    app.use('/shortener',
         proxy.createProxyMiddleware( {
             target: 'http://localhost:5000',
             changeOrigin: true,
-            pathRewrite: { '^/urlshortener': '' }
+            pathRewrite: { '^/shortener': '' }
     }));
 }

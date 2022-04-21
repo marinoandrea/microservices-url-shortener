@@ -28,7 +28,7 @@ class LoginComponent extends Component {
       .then((res) => {
         
         window.localStorage.token=res.data.token
-        this.props.history.replace('/home');
+        this.props.history.push('/home');
         this.props.history.go();
       })
       .catch((e) => {
@@ -37,7 +37,7 @@ class LoginComponent extends Component {
   };
 
   goToRegister = (e) =>{
-    this.props.history.replace('/register')
+    this.props.history.push('/register')
   }
 
   render() {
