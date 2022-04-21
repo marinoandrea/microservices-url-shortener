@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  entrypoint:
+    build:
+      context: services/nginx-entrypoint
+    ports:
+      - 3000:3000
+
   auth:
     build:
       context: services/auth-service
