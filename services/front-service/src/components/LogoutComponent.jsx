@@ -7,7 +7,7 @@ class LogoutComponent extends Component {
     if(localStorage.loginToken){
         localStorage.loginToken = ""
     }
-    this.props.history.push('/')
+    this.props.history.push('/login')
   }
   render() {
     return null;

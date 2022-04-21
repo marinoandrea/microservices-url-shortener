@@ -21,7 +21,7 @@ class UpdateUrlShortenerComponent extends Component {
     e.preventDefault();
     UrlShortenerService.updateUrlShortener(this.state.urlAddress, this.state.id)
       .then(() => {
-        this.props.history.push("/url-shortener-list");
+        this.props.history.push("/home/url-shortener-list");
       })
       .catch((e) => {
         this.setState({ error: e.response.data, errorTimestamp: Date.now() });
@@ -64,7 +64,7 @@ class UpdateUrlShortenerComponent extends Component {
                     Save
                   </button>
                   <Link
-                    to="/url-shortener-list"
+                    to="/home/url-shortener-list"
                     className="btn btn-danger"
                     style={{ marginLeft: "10px" }}
                   >

@@ -87,7 +87,7 @@ class LoginComponent extends Component {
                   
                   <button type="submit" class="btn btn-primary" onClick={this.userLoginHandler} >Submit</button>
                   <Link
-                    to="/"
+                    to="/login"
                     className="btn btn-danger"
                     style={{ marginLeft: "10px" }}
                   >

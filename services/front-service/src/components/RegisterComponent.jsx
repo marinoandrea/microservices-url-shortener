@@ -27,10 +27,13 @@ class RegisterComponent extends Component {
     e.preventDefault();
     UserService.createUser(this.state.username,this.state.password)
       .then(() => {
-        this.props.history.replace('/')
+        this.props.history.replace('/login')
       })
       .catch((e) => {
-        this.setState({ error: e.response.data, errorTimestamp: Date.now() });
+          if(e.response){
+            this.setState({ error: e.response.data, errorTimestamp: Date.now() });
+          }
+          console.log(e)
       });
   };
 
@@ -78,7 +81,7 @@ class RegisterComponent extends Component {
                   </div>
                   <button type="submit" class="btn btn-primary" onClick={this.userRegisterHandler} >Submit</button>
                   <Link
-                    to="/"
+                    to="/login"
                     className="btn btn-danger"
                     style={{ marginLeft: "10px" }}
                   >
