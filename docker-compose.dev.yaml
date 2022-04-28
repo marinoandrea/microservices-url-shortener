@@ -6,6 +6,9 @@ services:
       context: services/nginx-entrypoint
     ports:
       - 3000:3000
+    depends_on:
+      - auth
+      - shortener
 
   auth:
     build:
@@ -36,3 +39,11 @@ services:
       - auth
     volumes:
       - ./services/url-shortener:/usr/local/src/url-shortener
+  frontend:
+    build:
+      context: services/front-service
+    ports:
+      - 80:80
+    depends_on:
+      - auth
+      - shortener

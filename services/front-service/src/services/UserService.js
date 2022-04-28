@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const URL_SHORTENER_API_BASE_URL = "/userservice/";
+export const URL_SHORTENER_API_BASE_URL = "/";
 
 class UserService {
   login(username,password) {

@@ -12,5 +12,5 @@ FROM nginx
 COPY --from=frontend-build-container /tmp/frontend/build/ /usr/share/nginx/html
 
 COPY /nginx.conf /etc/nginx/conf.d/default.conf
-
+# exprose prot as 
 EXPOSE 80
