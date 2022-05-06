@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: auth-service-app
+spec:
+  replicas: {{ .Values.shortener.replicas }}
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service-container
+          image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.shortener.imageVersion | default "latest" }}"
+          ports:
+            - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
+          volumeMounts:
+            - name: auth-secret-volume
+              readOnly: true
+              mountPath: "/etc/rsa"
+          env:
+            - name: RSA_PRIVATE_PATH
+              value: "/etc/rsa/rsa-privatekey"
+            - name: PASSWORD_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: password-salt
+      volumes:
+        - name: auth-secret-volume
+          secret:
+            secretName: auth-secret

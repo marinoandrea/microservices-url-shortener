@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    # as suggested by the k8s documentation, we use these standard attributes 
+    # on our components:
+    # this name is also used as a selector lable
+    kubernetes.io/name: url-shortener-app 
+    # this helps us differentiate between static frontends and apis
+    kubernetes.io/component: backend
+    # we use the image version here, the choice is arbitrary
+    kubernetes.io/version:  {{ .Values.shortener.imageVersion }} 
+    # we use a selector name that can be used by the load balancer to target pods
+    app: url-shortener-app 
+spec:
+  # how many pods should be spawned
+  replicas: {{ .Values.shortener.replicas }}
+  selector:
+    matchLabels:
+      app: url-shortener-app
+  template:
+    metadata:
+      namespace: {{ .Values.namespace | default "default" }}
+      labels:
+        app: url-shortener-app
+    spec:
+      containers:
+        - name: url-shortener-container
+          # we select the image versione specified by the user, "latest" if undefined
+          image: "docker.io/marinoandrea/wscbs-url-shortener:{{ .Values.shortener.imageVersion | default "latest" }}"
+          ports:
+            # what port are the pods going to listen to?
+            - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
+          env:
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service.{{ .Values.namespace | default "default" }}:{{ .Values.auth.servicePort | default 5000 }}"

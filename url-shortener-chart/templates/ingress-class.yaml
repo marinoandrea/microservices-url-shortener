@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  labels:
+    # as usual, we use this standard annotation to distinguish between the components of 
+    # our system
+    app.kubernetes.io/component: controller
+  name: url-shortener-ingress-class
+  namespace: {{ .Values.namespace | default "default" }}
+  annotations:
+    # redundant setting to ensure that this class will be used even if the 
+    # user goes for the default (not possible unless the chart is modified)
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  # we want nginx as we like the url rewrite rule (see ingreess.yaml)
+  controller: k8s.io/ingress-nginx

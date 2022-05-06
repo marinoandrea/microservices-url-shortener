@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: url-shortener-ingress
+  namespace: {{ .Values.namespace | default "default" }}
+  annotations:
+    # we need this to rewrite the received url and make sure the prefix
+    # is transparent to the services
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  # we specify to k8s that we want to use our own ingress class instead
+  # of the default one
+  ingressClassName: url-shortener-ingress-class
+  rules:
+    # we are only interested in HTTP routing
+    - http:
+        paths:
+          # this is the prefix regex for auth-service requests
+          - path: "/api/v{{ .Values.apiVersion | default 1 }}/auth/(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  # what port is the auth service (L4 load balancer) listening on?
+                  number: {{ .Values.auth.servicePort | default 5000 }}
+          # this is the prefix regex for url-shortener requests
+          - path: "/api/v{{ .Values.apiVersion | default 1 }}/shortener/(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: url-shortener
+                port:
+                  # what port is the shortener service (L4 load balancer) listening on?
+                  number: {{ .Values.shortener.servicePort | default 5000 }}
+          # anything else gets passed to our frontend application
+          - path: /(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: front-service
+                port:
+                  # we assume port 80 as it is serving static content
+                  number: 80
