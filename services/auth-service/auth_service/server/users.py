@@ -6,6 +6,7 @@ from auth_service.errors import ValidationError
 from auth_service.use_cases import create_user, login
 from flask import Blueprint, Request, jsonify, request
 from flask_cors import CORS
+from Crypto.PublicKey import RSA
 
 from .authn import ITokenManager, PyJWTTokenManager
 
@@ -66,15 +67,17 @@ def route_users_login():
 
 
 @lru_cache
-def read_public_key() -> str:
-    path = os.getenv("RSA_PUBLIC_PATH")
+def get_public_key() -> str:
+    path = os.getenv("RSA_PRIVATE_PATH")
 
     if path is None:
         raise RuntimeError(
-            "A 'RSA_PUBLIC_PATH' env variable must be defined.")
+            "A 'RSA_PRIVATE_PATH' env variable must be defined.")
 
+    # we generate the public key by reading the private one
     with open(path, 'r') as f:
-        return f.read()
+        key = RSA.import_key(f.read())
+        return key.publickey().export_key()
 
 
 @blueprint.route("/jwt/public-keys", methods=['GET'])
@@ -87,6 +90,6 @@ def route_jwt_publickeys():
     """
     return jsonify({
         "public_keys": {
-            "0": read_public_key()
+            "0": get_public_key()
         }
     }), 200
