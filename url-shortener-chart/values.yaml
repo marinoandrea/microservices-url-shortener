@@ -1,0 +1,18 @@
+apiVersion: 1
+namespace: default
+
+# configuration for the identity provider service
+auth:
+  replicas: 3 # number of pod replicas
+  servicePort: 5000 # service exposed port
+  containerPort: 5000 # container internal port
+  imageVersion: "latest"
+  # passwordSalt: use this to set a permanent salt that does not change across
+  # different deployments. Otherwise, the chart will generate a random one.
+
+# configuration for the core url shortener service
+shortener:
+  replicas: 3 # number of pod replicas
+  servicePort: 5000 # service exposed port
+  containerPort: 5000 # container internal port
+  imageVersion: "latest"
