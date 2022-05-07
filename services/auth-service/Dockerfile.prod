@@ -1,17 +1,20 @@
-# syntax=docker/dockerfile:1
-
+# using python:3.9-slim, this is the first stage image
+# used as a runtime environment.
 FROM python:3.9-slim
-
+#set /usr/local/src/auth-service as APP_DIR environment variables
 ENV APP_DIR /usr/local/src/auth-service
-
+#we copy all the files in current directory for the compile and running
 COPY . ${APP_DIR}/
 
+# we set an appropriate work directory to highlight this is
+# just a temporary folder and that this container should not be used as
+# the runtime environment
 WORKDIR ${APP_DIR}
-
+# update apt repository and install pipenv for compile 
 RUN apt-get update && apt-get install -y pipenv
-
+# we use pipenv to compile the application and install gunicorn
 RUN pipenv install --system --deploy && pip install gunicorn
-
+# we expose 5000 as the service port
 EXPOSE 5000
-
+# we use this command to run the application
 CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "app:app" ]
