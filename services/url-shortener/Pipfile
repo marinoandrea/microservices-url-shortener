@@ -11,6 +11,8 @@ flask-cors = "*"
 pyjwt = "*"
 cryptography = "*"
 requests = "*"
+pymongo = "*"
+dnspython = "*"
 
 [dev-packages]
 flake8 = "*"

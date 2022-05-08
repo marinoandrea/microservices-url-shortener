@@ -11,6 +11,8 @@ bcrypt = "*"
 pyjwt = "*"
 cryptography = "*"
 pycryptodome = "*"
+pymongo = "*"
+dnspython = "*"
 
 [dev-packages]
 flake8 = "*"

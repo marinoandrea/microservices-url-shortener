@@ -23,7 +23,7 @@ class IRepository(ABC, Generic[T]):
         ...
 
     @abstractmethod
-    def update(self, id: str, data: dict) -> ShortenedURL:
+    def update(self, id: str, data: dict) -> T:
         ...
 
 

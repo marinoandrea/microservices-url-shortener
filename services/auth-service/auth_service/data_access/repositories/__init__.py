@@ -1,4 +1,4 @@
 from .base import IUserRepository
-from .user import InMemoryUserRepository
+from .user import MongoDbUserRepository
 
-user_repository: IUserRepository = InMemoryUserRepository()
+user_repository: IUserRepository = MongoDbUserRepository()

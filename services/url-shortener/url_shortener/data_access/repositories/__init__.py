@@ -1,4 +1,4 @@
 from .base import IShortenedURLRepository
-from .shortened_url import InMemoryShortenedURLRepository
+from .shortened_url import MongoDbShortenedURLRepository
 
-shortened_url_repository: IShortenedURLRepository = InMemoryShortenedURLRepository()
+shortened_url_repository: IShortenedURLRepository = MongoDbShortenedURLRepository()

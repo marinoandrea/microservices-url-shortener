@@ -37,11 +37,13 @@ def make_unique_entity(data: dict) -> UniqueEntity:
     if 'id' in data and type(data['id']) != str:
         raise ValidationError("A UniqueEntity must contain a valid id.")
 
-    if 'created_at' in data and (type(data['created_at']) != int or data['created_at'] > time_ms):
-        raise ValidationError("A UniqueEntity must contain a valid timestamp for created_at.")
+    if 'created_at' in data and data['created_at'] > time_ms:
+        raise ValidationError(
+            "A UniqueEntity must contain a valid timestamp for created_at.")
 
-    if 'updated_at' in data and (type(data['updated_at']) != int or data['updated_at'] > time_ms):
-        raise ValidationError("A UniqueEntity must contain a valid timestamp for updated_at.")
+    if 'updated_at' in data and data['updated_at'] > time_ms:
+        raise ValidationError(
+            "A UniqueEntity must contain a valid timestamp for updated_at.")
 
     return UniqueEntity(
         id=data.get('id', str(uuid.uuid4())),

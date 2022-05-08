@@ -3,6 +3,7 @@ from dataclasses import asdict
 from typing import Optional
 
 from url_shortener.data_access.repositories.base import IShortenedURLRepository
+from url_shortener.data_access.vendors.mongodb import MongoDbRepository
 from url_shortener.entities.shortened_url import ShortenedURL, make_url
 from url_shortener.errors import DataAccessError
 
@@ -89,3 +90,76 @@ class InMemoryShortenedURLRepository(IShortenedURLRepository):
                 target_ids.append(surl.id)
         for url_id in target_ids:
             self.data.pop(url_id)
+
+
+class MongoDbShortenedURLRepository(
+    IShortenedURLRepository,
+    MongoDbRepository[ShortenedURL]
+):
+
+    def __init__(self) -> None:
+        super().__init__("shortened_urls")
+
+    def find_by_original_address(self, addr: str) -> Optional[ShortenedURL]:
+        result = self.connection.find({"original_address": addr})
+        return make_url({**result, "id": result["_id"]})
+
+    def insert(self, url: ShortenedURL):
+        obj = asdict(url)
+        id = obj.pop("id")
+        self.connection.insert_one({**obj, "_id": id})
+
+    def find_by_id(self, id: str) -> Optional[ShortenedURL]:
+        result = self.connection.find_one({"_id": id})
+        if result is None:
+            return None
+        return make_url({**result, "id": result["_id"]})
+
+    def find_by_short_id(self, short_id: str) -> Optional[ShortenedURL]:
+        result = self.connection.find_one({"short_id": short_id})
+        if result is None:
+            return None
+        return make_url({**result, "id": result["_id"]})
+
+    def get_all_ids(self) -> list[str]:
+        out = []
+        for r in self.connection.find():
+            out.append(r["short_id"])
+        return out
+
+    def delete(self, id: str):
+        self.connection.delete_one({"_id": id})
+
+    def delete_by_short_id(self, short_id: str):
+        self.connection.delete_one({"short_id": short_id})
+
+    def update(self, id: str, data: dict) -> ShortenedURL:
+        raise NotImplementedError()
+
+    def update_by_short_id(self, short_id: str, data: dict) -> ShortenedURL:
+        target = self.find_by_short_id(short_id)
+
+        if target is None:
+            raise DataAccessError(
+                "There is no url associated with this short id.")
+
+        self.data[target.id] = make_url({
+            **target,
+            **data,
+            "updated_at": int(time.time() * 1000)
+        })
+
+        return self.connection.update_one(
+            {"_id": target.id},
+            {**data, "updated_at": int(time.time() * 1000)})
+
+    def get_all_ids_by_user(self, user_id: str) -> list[str]:
+        out = []
+        for r in self.connection.find():
+            if r["user_id"] != user_id:
+                continue
+            out.append(r["short_id"])
+        return out
+
+    def delete_by_user_id(self, user_id: str):
+        self.connection.delete_many({"user_id": user_id})
