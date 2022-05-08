@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_ENDPOINT } from "../config";
 
 export const ROUTE = `${API_ENDPOINT}/shortener`;
 
