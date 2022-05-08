@@ -4,9 +4,9 @@ from functools import lru_cache
 
 from auth_service.errors import ValidationError
 from auth_service.use_cases import create_user, login
+from Crypto.PublicKey import RSA
 from flask import Blueprint, Request, jsonify, request
 from flask_cors import CORS
-from Crypto.PublicKey import RSA
 
 from .authn import ITokenManager, PyJWTTokenManager
 
@@ -77,7 +77,7 @@ def get_public_key() -> str:
     # we generate the public key by reading the private one
     with open(path, 'r') as f:
         key = RSA.import_key(f.read())
-        return key.publickey().export_key()
+        return key.publickey().export_key().decode('utf-8')
 
 
 @blueprint.route("/jwt/public-keys", methods=['GET'])
