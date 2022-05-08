@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-service-deployment
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: "{{ .Values.namespace | default "default" }}"
   labels:
     app: auth-service-app
 spec:

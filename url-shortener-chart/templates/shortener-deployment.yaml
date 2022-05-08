@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   # we set url-shortener-deployment as the name of this Deployment object.
   name: url-shortener-deployment 
-  namespace: {{ .Values.namespace | default "default" }} # we define the deployment namespace and "default" as the default value
+  namespace: "{{ .Values.namespace | default "default" }}" # we define the deployment namespace and "default" as the default value
   labels:
     # as suggested by the k8s documentation, we use these standard attributes 
     # on our components:

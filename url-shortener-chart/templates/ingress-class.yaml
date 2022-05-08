@@ -6,7 +6,7 @@ metadata:
     # our system
     app.kubernetes.io/component: controller
   name: url-shortener-ingress-class
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: "{{ .Values.namespace | default "default" }}"
   annotations:
     # redundant setting to ensure that this class will be used even if the 
     # user goes for the default (not possible unless the chart is modified)

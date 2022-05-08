@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front-service-deployment
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: "{{ .Values.namespace | default "default" }}"
   labels:
     app: front-service-app
     kubernetes.io/name: front-service
