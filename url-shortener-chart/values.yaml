@@ -16,3 +16,7 @@ shortener:
   servicePort: 5000 # service exposed port
   containerPort: 5000 # container internal port
   imageVersion: "latest"
+
+
+front:
+  imageVersion: "latest"
