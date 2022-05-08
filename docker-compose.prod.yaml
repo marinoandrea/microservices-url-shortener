@@ -1,23 +1,25 @@
 version: "3.8"
 
-services:
-  entrypoint:
-    build:
-      context: services/nginx-entrypoint
+services: # define the services of our project
+  entrypoint: # define the entrypoint service
+    build: 
+      context: services/nginx-entrypoint # we set this service path to create container image
     ports:
-      - 3000:3000
-
+      - 3000:3000 # define the container port 3000 bound to the host port 3000 and expose the host port
+    depends_on: # define the dependency. After auth service and shortener service are up, it starts up
+      - auth
+      - shortener
   auth:
     build:
       context: services/auth-service
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.prod # we will use  Dockerfile.dev to build the image
     ports:
       - 5001:5000
-    environment:
+    environment: # we set the following variables as environment variables
       - RSA_PRIVATE_PATH=${RSA_PRIVATE_PATH}
       - RSA_PUBLIC_PATH=${RSA_PUBLIC_PATH}
       - PASSWORD_SALT=${PASSWORD_SALT}
-    volumes:
+    volumes: #defines mount host paths to the service container
       - ./services/auth-service:/usr/local/src/auth-service
 
   shortener:
@@ -32,3 +34,12 @@ services:
       - auth
     volumes:
       - ./services/url-shortener:/usr/local/src/url-shortener
+
+  frontend:
+    build:
+      context: services/front-service
+    ports:
+      - 80:80
+    depends_on:
+      - auth
+      - shortener
