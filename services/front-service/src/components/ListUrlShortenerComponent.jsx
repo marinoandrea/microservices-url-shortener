@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import UrlShortenerService, {
-  URL_SHORTENER_API_BASE_URL,
-} from "../services/UrlShortenerService";
+import UrlShortenerService, { ROUTE } from "../services/UrlShortenerService";
 
 class ListUrlShortenerComponent extends Component {
   constructor(props) {
@@ -35,8 +33,9 @@ class ListUrlShortenerComponent extends Component {
     UrlShortenerService.getUrlShortener().then((res) => {
       console.log(res);
       if (res.data) {
-        this.setState({ 
-            urlShorteners: res.data });
+        this.setState({
+          urlShorteners: res.data,
+        });
       }
     });
   }
@@ -70,11 +69,11 @@ class ListUrlShortenerComponent extends Component {
                   <td>{urlShortener}</td>
                   <td>
                     <a
-                      href={`${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                      href={`${ROUTE}/${urlShortener}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {`${window.location.host}${URL_SHORTENER_API_BASE_URL}/${urlShortener}`}
+                      {`${window.location.host}${ROUTE}/${urlShortener}`}
                     </a>
                   </td>
                   {/*<td>{urlShortener.original_address}</td>*/}
