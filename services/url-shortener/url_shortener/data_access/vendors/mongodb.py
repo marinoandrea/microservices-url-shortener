@@ -11,8 +11,8 @@ MONGODB_HOST = os.getenv("MONGODB_HOST")
 
 MONGODB_URI = f"mongodb://{MONGODB_USER}:{MONGODB_PASS}@{MONGODB_HOST}/{MONGODB_NAME}?authSource=admin"
 
-client = pymongo.MongoClient(MONGODB_URI)
-database = client[MONGODB_NAME]
+client = pymongo.MongoClient(MONGODB_URI, connect=True)
+database = client.get_database(MONGODB_NAME)
 
 T = TypeVar("T")
 
