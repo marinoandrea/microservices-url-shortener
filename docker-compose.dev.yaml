@@ -22,8 +22,25 @@ services: # define the services of our project
       - PASSWORD_SALT=${PASSWORD_SALT}
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - MONGODB_USER=${AUTH_MONGODB_USER}
+      - MONGODB_PASS=${AUTH_MONGODB_PASS}
+      - MONGODB_NAME=${AUTH_MONGODB_NAME}
+      - MONGODB_HOST=auth-db:27017
+    depends_on:
+      - auth-db
     volumes: #defines mount host paths to the service container
       - ./services/auth-service:/usr/local/src/auth-service
+
+
+  auth-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${AUTH_MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${AUTH_MONGODB_PASS}
+      - MONGO_INITDB_DATABASE=${AUTH_MONGODB_NAME}
+    ports:
+      - 27019:27017
+
 
   shortener:
     build:
@@ -35,15 +52,31 @@ services: # define the services of our project
       - AUTH_SERVICE_URL=http://auth:5000
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+      - MONGODB_USER=${SHORTENER_MONGODB_USER}
+      - MONGODB_PASS=${SHORTENER_MONGODB_PASS}
+      - MONGODB_NAME=${SHORTENER_MONGODB_NAME}
+      - MONGODB_HOST=shortener-db:27017
     depends_on:
       - auth
+      - shortener-db
     volumes:
       - ./services/url-shortener:/usr/local/src/url-shortener
+
+  shortener-db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${SHORTENER_MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${SHORTENER_MONGODB_PASS}
+      - MONGO_INITDB_DATABASE=${SHORTENER_MONGODB_NAME}
+    ports:
+      - 27018:27017
+      
   frontend:
     build:
       context: services/front-service
     ports:
-      - 80:80
+      - 3001:80
     depends_on:
       - auth
       - shortener
+
