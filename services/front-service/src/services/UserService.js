@@ -1,14 +1,21 @@
 import axios from "axios";
+import { API_ENDPOINT } from "../config";
 
-export const URL_SHORTENER_API_BASE_URL = "/";
+export const ROUTE = `${API_ENDPOINT}/auth`;
 
 class UserService {
-  login(username,password) {
-    return axios.post(URL_SHORTENER_API_BASE_URL+"users/login",{ username: username,password:password });
+  login(username, password) {
+    return axios.post(`${ROUTE}/users/login`, {
+      username: username,
+      password: password,
+    });
   }
 
-  createUser(username,password) {
-    return axios.post(URL_SHORTENER_API_BASE_URL+"users",{ username: username,password:password });
+  createUser(username, password) {
+    return axios.post(`${ROUTE}/users/login`, {
+      username: username,
+      password: password,
+    });
   }
 }
 

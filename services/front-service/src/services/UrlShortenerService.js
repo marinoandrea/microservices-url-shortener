@@ -1,35 +1,37 @@
 import axios from "axios";
 
-export const URL_SHORTENER_API_BASE_URL = "/shortener/";
+export const ROUTE = `${API_ENDPOINT}/shortener`;
+
 var instance = axios.create({
-    headers: {
-        common: {        // can be common or any other method
-            Authorization: window.localStorage.token
-        }
-    }
+  headers: {
+    common: {
+      // can be common or any other method
+      Authorization: window.localStorage.token,
+    },
+  },
 });
 
 class UrlShortenerService {
   getUrlShortener() {
-    return instance.get(URL_SHORTENER_API_BASE_URL);
+    return instance.get(ROUTE);
   }
 
   createUrlShortener(urlAddress) {
-    return instance.post(URL_SHORTENER_API_BASE_URL, { url: urlAddress });
+    return instance.post(ROUTE, { url: urlAddress });
   }
 
   getUrlById(urlShortenerId) {
-    return instance.get(URL_SHORTENER_API_BASE_URL + urlShortenerId);
+    return instance.get(`${ROUTE}/${urlShortenerId}`);
   }
 
   updateUrlShortener(urlAddress, urlShortenerId) {
-    return instance.put(URL_SHORTENER_API_BASE_URL + urlShortenerId, {
+    return instance.put(`${ROUTE}/${urlShortenerId}`, {
       url: urlAddress,
     });
   }
 
   deleteUrlShortenerById(urlShortenerId) {
-    return instance.delete(URL_SHORTENER_API_BASE_URL + urlShortenerId);
+    return instance.delete(`${ROUTE}/${urlShortenerId}`);
   }
 }
 
