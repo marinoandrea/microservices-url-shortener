@@ -20,6 +20,6 @@ spec:
     spec:
       containers:
         - name: front-service-container
-          image: "docker.io/marinoandrea/wscbs-front-service:{{ .Values.shortener.imageVersion | default "latest" }}"
+          image: "docker.io/marinoandrea/wscbs-front-service:{{ .Values.front.imageVersion | default "latest" }}"
           ports:
             - containerPort: 80

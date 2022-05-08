@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: auth-service
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: "{{ .Values.namespace | default "default" }}"
 spec:
   # this is an L4 Load Balancer
   type: LoadBalancer
   ports:
     - protocol: TCP # we need TCP to load balance HTTP requests
-      port: {{ .Values.shortener.port | default 5000 }} # what port is our load balancer going to expose?
-      targetPort: {{ .Values.shortener.port | default 5000 }} # what port are our containers listening on?
+      port: {{ .Values.auth.port | default 5000 }} # what port is our load balancer going to expose?
+      targetPort: {{ .Values.auth.port | default 5000 }} # what port are our containers listening on?
   selector:
     app: auth-service-app

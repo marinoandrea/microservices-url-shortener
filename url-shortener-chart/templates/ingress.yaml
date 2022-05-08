@@ -33,12 +33,3 @@ spec:
                 port:
                   # what port is the shortener service (L4 load balancer) listening on?
                   number: {{ .Values.shortener.servicePort | default 5000 }}
-          # anything else gets passed to our frontend application
-          - path: /(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: front-service
-                port:
-                  # we assume port 80 as it is serving static content
-                  number: 80

@@ -6,20 +6,20 @@ metadata:
   labels:
     app: auth-service-app
 spec:
-  replicas: {{ .Values.shortener.replicas }}
+  replicas: {{ .Values.auth.replicas }}
   selector:
     matchLabels:
-      app: auth-service
+      app: auth-service-app
   template:
     metadata:
       labels:
-        app: auth-service
+        app: auth-service-app
     spec:
       containers:
         - name: auth-service-container
-          image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.shortener.imageVersion | default "latest" }}"
+          image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.auth.imageVersion | default "latest" }}"
           ports:
-            - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
+            - containerPort: {{ .Values.auth.containerPort | default 5000 }}
           # make the secret available as a file to access for the pod as suggested in the Kubernetes document.
           volumeMounts:
             - name: auth-secret-volume
