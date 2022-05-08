@@ -20,19 +20,23 @@ spec:
           image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.shortener.imageVersion | default "latest" }}"
           ports:
             - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
+          # make the secret available as a file to access for the pod as suggested in the Kubernetes document.
           volumeMounts:
             - name: auth-secret-volume
               readOnly: true
+              # the directory which secret stored
               mountPath: "/etc/rsa"
           env:
             - name: RSA_PRIVATE_PATH
               value: "/etc/rsa/rsa-privatekey"
             - name: PASSWORD_SALT
+              # get the password-salt value from auth-secret
               valueFrom:
                 secretKeyRef:
                   name: auth-secret
                   key: password-salt
       volumes:
+        # Add a volume in which secret.secretName is the same as the name defined in the auth-secret.yaml
         - name: auth-secret-volume
           secret:
             secretName: auth-secret

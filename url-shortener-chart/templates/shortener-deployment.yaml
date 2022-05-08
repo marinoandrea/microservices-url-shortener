@@ -1,8 +1,9 @@
-apiVersion: apps/v1
+apiVersion: apps/v1 # we set api group version to apps/v1 which is the most common API group in Kubernetes
 kind: Deployment
 metadata:
-  name: url-shortener-deployment
-  namespace: {{ .Values.namespace | default "default" }}
+  # we set url-shortener-deployment as the name of this Deployment object.
+  name: url-shortener-deployment 
+  namespace: {{ .Values.namespace | default "default" }} # we define the deployment namespace and "default" as the default value
   labels:
     # as suggested by the k8s documentation, we use these standard attributes 
     # on our components:
@@ -33,6 +34,6 @@ spec:
           ports:
             # what port are the pods going to listen to?
             - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
-          env:
+          env: # we set the AUTH_SERVICE_URL environment variable.
             - name: AUTH_SERVICE_URL
               value: "http://auth-service.{{ .Values.namespace | default "default" }}:{{ .Values.auth.servicePort | default 5000 }}"
