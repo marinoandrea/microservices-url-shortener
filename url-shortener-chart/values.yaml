@@ -9,6 +9,11 @@ auth:
   imageVersion: "latest"
   # passwordSalt: use this to set a permanent salt that does not change across
   # different deployments. Otherwise, the chart will generate a random one.
+  database:
+    name: test
+    user: test
+    pass: test
+    port: 27019
 
 # configuration for the core url shortener service
 shortener:
@@ -16,7 +21,11 @@ shortener:
   servicePort: 5000 # service exposed port
   containerPort: 5000 # container internal port
   imageVersion: "latest"
-
+  database:
+    name: test
+    user: test
+    pass: test
+    port: 27018
 
 front:
   imageVersion: "latest"
