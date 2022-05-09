@@ -25,9 +25,6 @@ spec:
       containers:
         - name: url-shortener-database
           image: mongo
-          volumeMounts:
-            - name: url-shortener-database-volume
-              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
@@ -44,7 +41,3 @@ spec:
                 configMapKeyRef:
                   name: url-shortener-database-configmap
                   key: mongo-db-name
-      volumes:
-        - name: url-shortener-database-volume
-          persistentVolumeClaim:
-            claimName: url-shortener-database-volume-claim

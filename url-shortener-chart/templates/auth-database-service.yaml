@@ -7,6 +7,6 @@ spec:
   type: ClusterIP
   ports:
     - port: {{ .Values.auth.database.port }}
-      targetPort: {{ .Values.auth.database.port }}
+      targetPort: 27017
   selector:
     app: auth-database-app

@@ -25,9 +25,6 @@ spec:
       containers:
         - name: auth-database
           image: mongo
-          volumeMounts:
-            - name: auth-database-volume
-              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
@@ -44,7 +41,3 @@ spec:
                 configMapKeyRef:
                   name: auth-database-configmap
                   key: mongo-db-name
-      volumes:
-        - name: auth-database-volume
-          persistentVolumeClaim:
-            claimName: auth-database-volume-claim

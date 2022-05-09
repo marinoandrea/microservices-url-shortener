@@ -7,6 +7,6 @@ spec:
   type: ClusterIP
   ports:
     - port: {{ .Values.shortener.database.port }}
-      targetPort: {{ .Values.shortener.database.port }}
+      targetPort: 27017
   selector:
     app: url-shortener-database-app
