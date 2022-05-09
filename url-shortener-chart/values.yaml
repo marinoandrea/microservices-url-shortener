@@ -26,4 +26,5 @@ shortener:
     pass: test
 
 front:
+  replicas: 3 # number of pod replicas
   imageVersion: "latest"
