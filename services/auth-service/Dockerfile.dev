@@ -1,20 +1,29 @@
-# using python:3.9-slim, this is the first stage image
-# used as a runtime environment.
+# using python:3.9-slim, this is the first stage image also used as a runtime environment.
+# This version is based on Alpine Linux, which is a minimal and lightweight distribution.
 FROM python:3.9-slim
-#set /usr/local/src/auth-service as APP_DIR environment variables
+
+# this path represents the root directory for our python application inside the container
 ENV APP_DIR /usr/local/src/auth-service
-#we copy all the files in current directory for the compile and running
+
+# in development, we copy the entire directory as we
+# need local development files (such as the RSA keys)
 COPY . ${APP_DIR}/
 
-# we set an appropriate work directory to highlight this is
-# just a temporary folder and that this container should not be used as
-# the runtime environment
+# this is equivalent to `cd $APP_DIR`
 WORKDIR ${APP_DIR}
-# update apt repository and install pipenv for compile 
+
+# update apt repositories and install pipenv for package management
+# (we use Pipfile to keep track of dependencies)
 RUN apt-get update && apt-get install -y pipenv
-# we use pipenv to install the dependences of the service and install gunicorn.
+
+# we install the dependencies at the system level (as this is the only
+# application running on the VM) and we install gunicorn as a web server engine
 RUN pipenv install --system --deploy && pip install gunicorn
+
 # we expose 5000 as the service port
 EXPOSE 5000
-# we use this command to run the application
+
+# we run the application bound to all interfaces (i.e. 0.0.0.0) so that it can be targeted
+# by external services. Additionally, we use the '--reload' flag during development
+# to avoid rebuilding the image every time we change the source code.
 CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "--reload", "app:app" ]
