@@ -12,7 +12,7 @@ COPY . ${APP_DIR}/
 WORKDIR ${APP_DIR}
 # update apt repository and install pipenv for compile 
 RUN apt-get update && apt-get install -y pipenv
-# we use pipenv to compile the application and install gunicorn
+# we use pipenv to install the dependences of the service and install gunicorn.
 RUN pipenv install --system --deploy && pip install gunicorn
 # we expose 5000 as the service port
 EXPOSE 5000
