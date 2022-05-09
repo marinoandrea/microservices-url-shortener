@@ -1,0 +1,45 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: auth-policy-deny-all-db
+  namespace: "{{ .Values.namespace | default "default" }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-database-app
+  policyTypes:
+    - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: auth-policy-allow-db-from-api
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-database-app
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app: auth-service-app
+      ports:
+        - protocol: TCP
+          port: {{ .Values.auth.database.port }}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: auth-policy-allow-db-to-api
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-database-app
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            app: auth-service-app
+      ports:
+        - protocol: TCP
+          port: {{ .Values.auth.database.port }}

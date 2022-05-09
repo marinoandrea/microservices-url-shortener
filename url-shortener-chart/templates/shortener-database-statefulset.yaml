@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: url-shortener-database
+  namespace: "{{ .Values.namespace | default "default" }}"
+  labels:
+    kubernetes.io/name: url-shortener-database
+    kubernetes.io/component: database
+spec:
+  selector:
+    matchLabels:
+      app: url-shortener-database-app
+  serviceName: url-shortener-database
+  # Replicas
+  # ---
+  # It is crucial that we do not replicate the database as we do not implement
+  # any sharding/replication strategy. This is why we explicitly repeat the
+  # default value of 1.
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: url-shortener-database-app
+    spec:
+      containers:
+        - name: url-shortener-database
+          image: mongo
+          volumeMounts:
+            - name: url-shortener-database-volume
+              mountPath: /data/db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: url-shortener-database-credentials
+                  key: mongo-db-user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: url-shortener-database-credentials
+                  key: mongo-db-pass
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: url-shortener-database-configmap
+                  key: mongo-db-name
+
+
+  volumeClaimTemplates:
+    - metadata:
+        name: url-shortener-database-volume
+      spec:
+        storageClassName: "standard"
+        accessModes: ["ReadWriteOnce", "ReadOnlyMany"]
+        resources:
+          requests:
+            storage: "250Mi"

@@ -15,6 +15,10 @@ spec:
       labels:
         app: auth-service-app
     spec:
+      initContainers:
+        - name: init-auth-service-database-container
+          image: busybox
+          command: ['sh', '-c', "until nslookup auth-database; do echo waiting for auth-database; sleep 2; done"]
       containers:
         - name: auth-service-container
           image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.auth.imageVersion | default "latest" }}"

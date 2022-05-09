@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: auth-database
+  namespace: "{{ .Values.namespace | default "default" }}"
+  labels:
+    kubernetes.io/name: auth-database
+    kubernetes.io/component: database
+spec:
+  selector:
+    matchLabels:
+      app: auth-database-app
+  serviceName: auth-database
+  # Replicas
+  # ---
+  # It is crucial that we do not replicate the database as we do not implement
+  # any sharding/replication strategy. This is why we explicitly repeat the
+  # default value of 1.
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auth-database-app
+    spec:
+      containers:
+        - name: auth-database
+          image: mongo
+          volumeMounts:
+            - name: auth-database-volume
+              mountPath: /data/db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: auth-database-credentials
+                  key: mongo-db-user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-database-credentials
+                  key: mongo-db-pass
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-database-configmap
+                  key: mongo-db-name
+
+  volumeClaimTemplates:
+    - metadata:
+        name: auth-database-volume
+      spec:
+        storageClassName: "standard"
+        accessModes: ["ReadWriteOnce", "ReadOnlyMany"]
+        resources:
+          requests:
+            storage: "250Mi"

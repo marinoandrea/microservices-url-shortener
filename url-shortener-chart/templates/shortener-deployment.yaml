@@ -31,6 +31,9 @@ spec:
         - name: init-url-shortener-container
           image: busybox
           command: ['sh', '-c', "until nslookup auth-service; do echo waiting for auth-service; sleep 2; done"]
+        - name: init-url-shortener-database-container
+          image: busybox
+          command: ['sh', '-c', "until nslookup url-shortener-database; do echo waiting for url-shortener-database; sleep 2; done"]
       containers:
         - name: url-shortener-container
           # we select the image versione specified by the user, "latest" if undefined
