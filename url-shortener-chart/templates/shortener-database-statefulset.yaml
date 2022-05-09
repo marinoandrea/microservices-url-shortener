@@ -44,14 +44,19 @@ spec:
                 configMapKeyRef:
                   name: url-shortener-database-configmap
                   key: mongo-db-name
-
-
-  volumeClaimTemplates:
-    - metadata:
-        name: url-shortener-database-volume
-      spec:
-        storageClassName: "hostpath"
-        accessModes: ["ReadWriteMany"]
-        resources:
-          requests:
-            storage: "250Mi"
+      volumes:
+        - name: url-shortener-database-volume
+          persistentVolumeClaim:
+            claimName: url-shortener-database-volume-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: url-shortener-database-volume-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 250Mi

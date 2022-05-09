@@ -44,13 +44,19 @@ spec:
                 configMapKeyRef:
                   name: auth-database-configmap
                   key: mongo-db-name
-
-  volumeClaimTemplates:
-    - metadata:
-        name: auth-database-volume
-      spec:
-        storageClassName: "hostpath"
-        accessModes: ["ReadWriteMany"]
-        resources:
-          requests:
-            storage: "250Mi"
+      volumes:
+        - name: auth-database-volume
+          persistentVolumeClaim:
+            claimName: auth-database-volume-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: auth-database-volume-claim
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 250Mi
