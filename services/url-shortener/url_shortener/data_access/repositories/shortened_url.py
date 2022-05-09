@@ -143,9 +143,11 @@ class MongoDbShortenedURLRepository(
             raise DataAccessError(
                 "There is no url associated with this short id.")
 
-        return self.connection.update_one(
+        self.connection.update_one(
             {"_id": target.id},
-            {**asdict(data), "updated_at": int(time.time() * 1000)})
+            {"$set": {**data, "updated_at": int(time.time() * 1000)}})
+
+        return self.find_by_id(target.id)
 
     def get_all_ids_by_user(self, user_id: str) -> list[str]:
         out = []
