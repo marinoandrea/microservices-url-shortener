@@ -2,8 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-service-deployment
+  # we allow the user to specify a namespace
   namespace: "{{ .Values.namespace | default "default" }}"
+  # as recommended by the k8s documentation, we use standard labels for 
+  # identifying our pods
   labels:
+    kubernetes.io/name: auth-service-app
+    kubernetes.io/component: backend
     app: auth-service-app
 spec:
   replicas: {{ .Values.auth.replicas }}
@@ -15,30 +20,45 @@ spec:
       labels:
         app: auth-service-app
     spec:
+      # we use a single init container here to wait for the auth-database service
+      # to be available for DNS lookups inside the cluster. This does not guarantee
+      # that the connection to the DBMS will be available immediately (spin wait is handled
+      # inside the application logic), but it prevents resolution errors on startup.
+      # This solution is also mentioend in K8s' documentation and `busybox` is a very simple
+      # placeholder container that allows us to execute shell commands.
       initContainers:
         - name: init-auth-service-database-container
           image: busybox
-          command: ['sh', '-c', "until nslookup auth-database; do echo waiting for auth-database; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup auth-database; sleep 1; done"]
+
       containers:
         - name: auth-service-container
           image: "docker.io/marinoandrea/wscbs-auth-service:{{ .Values.auth.imageVersion | default "latest" }}"
           ports:
             - containerPort: {{ .Values.auth.containerPort | default 5000 }}
-          # make the secret available as a file to access for the pod as suggested in the Kubernetes document.
+          # as we expect to read the private key from a file inside our application
+          # (which is also more secure than storing it in an ENV variable), we mount
+          # the secret as a volume in the /etc/rsa folder.
           volumeMounts:
             - name: auth-secret-volume
               readOnly: true
-              # the directory which secret stored
               mountPath: "/etc/rsa"
           env:
+            # we then specify the file path for the private key
+            # which matches the key name in the secret
             - name: RSA_PRIVATE_PATH
               value: "/etc/rsa/rsa-privatekey"
+            # we do not particularly care about the password salt
+            # being stored as a file, so we simply extract it from
+            # the secret
             - name: PASSWORD_SALT
-              # get the password-salt value from auth-secret
               valueFrom:
                 secretKeyRef:
                   name: auth-secret
                   key: password-salt
+            # we then set all the necessary mongodb credentials for
+            # connections. these are the same that were used in the
+            # statefulset initialization.
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
@@ -54,11 +74,13 @@ spec:
                 configMapKeyRef:
                   name: auth-database-configmap
                   key: mongo-db-name
+            # finally, we set the db host to use the internal cluster DNS schema.
+            # this will be used by the application to connect to the DBMS.
             - name: MONGODB_HOST
               value: "auth-database.{{ .Values.namespace | default "default" }}.svc.cluster.local"
 
+      # here we simply define a named volume from a secret
       volumes:
-        # Add a volume in which secret.secretName is the same as the name defined in the auth-secret.yaml
         - name: auth-secret-volume
           secret:
             secretName: auth-secret

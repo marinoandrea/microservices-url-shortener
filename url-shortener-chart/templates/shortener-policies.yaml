@@ -1,23 +1,38 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
+  # as network policies are calculated with a union
+  # of available policies and the default allows for
+  # all connections, we can safely create a baseline
+  # protection denying all ingress connections to the
+  # database. we can then extend this to allow only
+  # the necessary services to communicate.
   name: url-shortener-policy-deny-all-db
+  # we allow the user to specify a namespace
   namespace: "{{ .Values.namespace | default "default" }}"
 spec:
+  # we target the database pod(s)
   podSelector:
     matchLabels:
       app: url-shortener-database-app
+  # we are mostly interest in ingress traffic as it represents
+  # a potential source of authorization/security issues
   policyTypes:
     - Ingress
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
+  # we want to allow communication from the auth-service pods to the database.
+  # the shortener microservice is the only one responsible for managing
+  # users data, therefore, the database only needs to be accessed in this scenario  
   name: url-shortener-policy-allow-db-from-api
 spec:
   podSelector:
     matchLabels:
       app: url-shortener-database-app
+  # we allow ingress traffic from the url-shortener pods
+  # but only on TCP connections for port 27017 (default mongo dbms port)
   ingress:
     - from:
       - podSelector:
@@ -30,11 +45,18 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
+  # we want to allow communication from the database to the auth-service.
+  # this is simply mirroring what we did in `url-shortener-policy-allow-db-from-api`
+  # to allow for client-server interactions
   name: url-shortener-policy-allow-db-to-api
 spec:
   podSelector:
     matchLabels:
       app: url-shortener-database-app
+  # we allow egress traffic from the database pod(s)
+  # but only on TCP connections for port 27017 (default mongo
+  # dbms port). Mongodb should be the only process 
+  # communicating with the outside.
   egress:
     - to:
       - podSelector:

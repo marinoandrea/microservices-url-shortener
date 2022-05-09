@@ -2,8 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: auth-database
-  namespace: "{{ .Values.namespace | default "default" }}"
+  # we allow the user to specify a namespace
+  namespace: "{{ .Values.namespace | default "default" }}" 
 spec:
+  # We define a service of type ClusterIP since we don't need
+  # to access the database from outside the cluster and there
+  # will only be one replica of the pod (no use for L4 load balancing).
+  # This will be accessible via DNS on the specified port. We
+  # target the same standard mongodb port in the container.
   type: ClusterIP
   ports:
     - port: 27017

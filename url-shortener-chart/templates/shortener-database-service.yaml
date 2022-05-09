@@ -3,7 +3,12 @@ kind: Service
 metadata:
   name: url-shortener-database
   namespace: "{{ .Values.namespace | default "default" }}"
-spec:
+spec:  
+  # We define a service of type ClusterIP since we don't need
+  # to access the database from outside the cluster and there
+  # will only be one replica of the pod.
+  # This will be accessible via DNS on the specified port. We
+  # target the same standard mongodb port in the container.
   type: ClusterIP
   ports:
     - port: 27017

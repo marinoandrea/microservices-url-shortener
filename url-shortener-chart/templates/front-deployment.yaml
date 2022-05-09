@@ -4,12 +4,11 @@ metadata:
   name: front-service-deployment
   namespace: "{{ .Values.namespace | default "default" }}"
   labels:
-    app: front-service-app
-    kubernetes.io/name: front-service
+    kubernetes.io/name: front-service-deployment
     kubernetes.io/component: frontend
-    kubernetes.io/version: "1.0.0"
+    app: front-service-app
 spec:
-  replicas: 3
+  replicas: {{ .Values.front.replicas | default 3 }}
   selector:
     matchLabels:
       app: front-service-app

@@ -1,18 +1,23 @@
 apiVersion: apps/v1
+# We chose a StatefulSet to deploy our single db pod due to its persistence
+# features. Besides the consistent resource naming (no hash), it is crucial
+# for supporting persistent volume claims bound to the set across restarts.
 kind: StatefulSet
 metadata:
-  name: auth-database
+  name: auth-database-statefulset
+  # we allow the user to specify a namespace
   namespace: "{{ .Values.namespace | default "default" }}"
+  # as recommended by the k8s documentation, we use standard labels for 
+  # identifying our pods
   labels:
-    kubernetes.io/name: auth-database
+    kubernetes.io/name: auth-database-statefulset
     kubernetes.io/component: database
+    app: auth-database-app
 spec:
   selector:
     matchLabels:
       app: auth-database-app
   serviceName: auth-database
-  # Replicas
-  # ---
   # It is crucial that we do not replicate the database as we do not implement
   # any sharding/replication strategy. This is why we explicitly repeat the
   # default value of 1.
@@ -24,18 +29,29 @@ spec:
     spec:
       containers:
         - name: auth-database
+          # we use the default latest mongo image since we do not
+          # fear breaking changes for our simple nosql logic in future releases
           image: mongo
           env:
+            # we get the root database username from the secret
+            # auth-database-credentials that we defined previously
+            # and pass it to the container as an environmental variable
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: auth-database-credentials
                   key: mongo-db-user
+            # we get the root database password from the secret
+            # auth-database-credentials that we defined previously
+            # and pass it to the container as an environmental variable
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: auth-database-credentials
                   key: mongo-db-pass
+            # we get the name of the database to initialize from the
+            # configmap auth-database-configmap that we defined previously
+            # and pass it to the container as an environmental variable
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 configMapKeyRef:

@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: url-shortener-ingress
+  # we allow the user to specify a namespace
   namespace: "{{ .Values.namespace | default "default" }}"
   annotations:
     # we need this to rewrite the received url and make sure the prefix
@@ -33,6 +34,8 @@ spec:
                 port:
                   # what port is the shortener service (L4 load balancer) listening on?
                   number: {{ .Values.shortener.servicePort | default 5000 }}
+          # every other request is routed to the front service single page app which will
+          # deal with navigation internally
           - path: "/(.*)"
             pathType: Prefix
             backend:

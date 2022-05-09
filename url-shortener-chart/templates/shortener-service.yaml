@@ -2,11 +2,21 @@ apiVersion: v1
 kind: Service
 metadata:
   name: url-shortener
+  # we allow the user to specify a namespace
   namespace: "{{ .Values.namespace | default "default" }}"
 spec:
+  # we use a NodePort here as we already have load balancing
+  # in the L7 layer with our Ingress. Additionally, an L4 LoadBalancer
+  # service would still have an external IP and we only want to expose
+  # our services through our api gateway. Finally, our static IP pool
+  # available in the production environment is too small to guarantee 
+  # a unique IP to each one of our services (we only have 3 addresses).
   type: NodePort
   ports:
-    - port: {{ .Values.shortener.servicePort | default 5000 }} # what port is our service going to expose?
-      targetPort: {{ .Values.shortener.containerPort | default 5000 }} # what port are our containers listening on?
+      # what port is our service going to expose?
+    - port: {{ .Values.shortener.servicePort | default 5000 }}
+      # what port are our containers listening on?
+      targetPort: {{ .Values.shortener.containerPort | default 5000 }}
+  # we target the url-shortener microservice pods
   selector:
-    app: url-shortener-app # which pods should be targeted by this service?
+    app: url-shortener-app

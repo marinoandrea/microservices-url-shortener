@@ -11,8 +11,6 @@ metadata:
     kubernetes.io/name: url-shortener-app 
     # this helps us differentiate between static frontends and apis
     kubernetes.io/component: backend
-    # we use the image version here, the choice is arbitrary
-    kubernetes.io/version:  {{ .Values.shortener.imageVersion }}
     # we use a selector name that can be used by the load balancer to target pods
     app: url-shortener-app 
 spec:
