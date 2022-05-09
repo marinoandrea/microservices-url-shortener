@@ -14,11 +14,11 @@ var instance = axios.create({
 
 class UrlShortenerService {
   getUrlShortener() {
-    return instance.get(ROUTE);
+    return instance.get(`${ROUTE}/`);
   }
 
   createUrlShortener(urlAddress) {
-    return instance.post(ROUTE, { url: urlAddress });
+    return instance.post(`${ROUTE}/`, { url: urlAddress });
   }
 
   getUrlById(urlShortenerId) {
