@@ -1,1 +1,18 @@
+Note that for you to be able to run this chart on bare metal (as intended),
+your cluster should also feature some load balancing mechanism which also
+allows for the Ingress to be assigned with a static IP.
+For example, with MetalLB, we could configure the static ip provisioning
+to work as follows:
 
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+    namespace: metallb-system
+    name: config
+    data:
+    config: |
+        address-pools:
+        - name: default
+        protocol: layer2
+        addresses:     
+        - <YOUR_IP_RANGE_START>-<YOUR_IP_RANGE_END>
