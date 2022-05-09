@@ -12,7 +12,7 @@ class UserService {
   }
 
   createUser(username, password) {
-    return axios.post(`${ROUTE}/users`, {
+    return axios.post(`${ROUTE}/users/`, {
       username: username,
       password: password,
     });
