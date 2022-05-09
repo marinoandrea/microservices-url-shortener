@@ -1,7 +1,12 @@
 version: "3.8"
 
-services: # define the services of our project
-  entrypoint: # define the entrypoint service
+services:
+  # this service represents our central gateway. all requests, including those for the
+  # static web application, should be routed through this nginx entrypoint. as this compose
+  # configuration is meant for development (we deploy in production with Helm and Kubernetes),
+  # we expose port 3000. in a hypothetical production scenario with docker compose we should
+  # serve this on the standard 80 for HTTP.
+  entrypoint:
     build:
       context: services/nginx-entrypoint # we set this service path to create container image
     ports:
@@ -9,16 +14,21 @@ services: # define the services of our project
     depends_on: # define the dependency. After auth service and shortener service are up, it starts up
       - auth
       - shortener
+      - frontend
 
+  # this service represents our identity provider. it relies
+  # on a mongodb instance (auth-db) for user data management.
   auth:
     build:
-      context: services/auth-service
-      dockerfile: Dockerfile.dev # we will use  Dockerfile.dev to build the image
+      context: services/auth-service # path to the root source folder for the microservice
+      dockerfile: Dockerfile.dev # we specify the development versione of the Dockerfile
     ports:
-      - 5001:5000
-    environment: # we set the following variables as environment variables
+      - 5001:5000 # define the container port 5000 bound to the host port 5001 and expose the host port
+    # we set the necessary encryption key path for token generation, password salt for hashing,
+    # mongodb credentials, and we set flask environment to development in order to facilitate
+    # debugging our application.
+    environment:
       - RSA_PRIVATE_PATH=${RSA_PRIVATE_PATH}
-      - RSA_PUBLIC_PATH=${RSA_PUBLIC_PATH}
       - PASSWORD_SALT=${PASSWORD_SALT}
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -26,12 +36,20 @@ services: # define the services of our project
       - MONGODB_PASS=${AUTH_MONGODB_PASS}
       - MONGODB_NAME=${AUTH_MONGODB_NAME}
       - MONGODB_HOST=auth-db:27017
+    # we wait for the database to spin up
     depends_on:
       - auth-db
-    volumes: #defines mount host paths to the service container
+    # we mount the source folder directly in the container in order to achieve
+    # hot reloading of the app through gunicorn (see Dockerfile.dev).
+    # as we change the files during development, changes are also reflected in
+    # the container without rebuilding the image.
+    volumes:
       - ./services/auth-service:/usr/local/src/auth-service
 
 
+  # a simple mongo instance which automatically persists the data
+  # in volumes managed by docker (see https://hub.docker.com/_/mongo/)
+  # so there is no need to specify a host path for the data folder
   auth-db:
     image: mongo
     environment:
@@ -42,12 +60,17 @@ services: # define the services of our project
       - 27019:27017
 
 
+  # this service represents our core business logic for url shortening. it relies
+  # on a mongodb instance (shortener-db) for entity management.
   shortener:
     build:
-      context: services/url-shortener
-      dockerfile: Dockerfile.dev
+      context: services/url-shortener # path to the root source folder for the microservice
+      dockerfile: Dockerfile.dev  # we specify the development versione of the Dockerfile
     ports:
-      - 5000:5000
+      - 5000:5000 # define the container port 5000 bound to the host port 5000 and expose the host port
+    # we set the necessary mongodb credentials, the URL for the auth-service (needed for the shortener to
+    # obtain the public key for token verification on initialization) and we set flask environment 
+    # to development in order to facilitate debugging our application.
     environment:
       - AUTH_SERVICE_URL=http://auth:5000
       - FLASK_ENV=development
@@ -56,12 +79,20 @@ services: # define the services of our project
       - MONGODB_PASS=${SHORTENER_MONGODB_PASS}
       - MONGODB_NAME=${SHORTENER_MONGODB_NAME}
       - MONGODB_HOST=shortener-db:27017
+    # we wait both for the database and the auth-service to spin up
     depends_on:
       - auth
       - shortener-db
+    # we mount the source folder directly in the container in order to achieve
+    # hot reloading of the app through gunicorn (see Dockerfile.dev).
+    # as we change the files during development, changes are also reflected in
+    # the container without rebuilding the image.
     volumes:
       - ./services/url-shortener:/usr/local/src/url-shortener
 
+  # a simple mongo instance which automatically persists the data
+  # in volumes managed by docker (see https://hub.docker.com/_/mongo/)
+  # so there is no need to specify a host path for the data folder
   shortener-db:
     image: mongo
     environment:
@@ -71,6 +102,8 @@ services: # define the services of our project
     ports:
       - 27018:27017
       
+  # this service is responsible for serving the static files
+  # for our single page React web application
   frontend:
     build:
       context: services/front-service
