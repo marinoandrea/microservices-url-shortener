@@ -13,7 +13,6 @@ auth:
     name: test
     user: test
     pass: test
-    port: 27019
 
 # configuration for the core url shortener service
 shortener:
@@ -25,7 +24,6 @@ shortener:
     name: test
     user: test
     pass: test
-    port: 27018
 
 front:
   imageVersion: "latest"

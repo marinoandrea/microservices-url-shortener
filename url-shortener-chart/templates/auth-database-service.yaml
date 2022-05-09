@@ -6,7 +6,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: {{ .Values.auth.database.port }}
+    - port: 27017
       targetPort: 27017
   selector:
     app: auth-database-app

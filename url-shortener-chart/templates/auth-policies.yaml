@@ -25,7 +25,7 @@ spec:
             app: auth-service-app
       ports:
         - protocol: TCP
-          port: {{ .Values.auth.database.port }}
+          port: 27017
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -42,4 +42,4 @@ spec:
             app: auth-service-app
       ports:
         - protocol: TCP
-          port: {{ .Values.auth.database.port }}
+          port: 27017

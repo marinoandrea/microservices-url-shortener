@@ -60,4 +60,4 @@ spec:
                   name: url-shortener-database-configmap
                   key: mongo-db-name
             - name: MONGODB_HOST
-              value: "url-shortener-database.{{ .Values.namespace | default "default" }}:{{ .Values.shortener.database.port }}"
+              value: "url-shortener-database.{{ .Values.namespace | default "default" }}"
