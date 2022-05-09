@@ -12,7 +12,7 @@ spec:
   # target the same standard mongodb port in the container.
   type: ClusterIP
   ports:
-    - port: 27017
-      targetPort: 27017
+    - port: 27017 # expose 27017 as the service port
+      targetPort: 27017 # targetPort is the same as the container port
   selector:
-    app: auth-database-app
+    app: auth-database-app # This service is for auth-database-app 

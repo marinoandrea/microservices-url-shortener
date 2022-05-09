@@ -39,7 +39,7 @@ spec:
           ports:
             # what port are the pods going to listen to?
             - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
-          env: # we set the AUTH_SERVICE_URL environment variable.
+          env: # we set the AUTH_SERVICE_URL,MONGODB_USER etc environment variables.
             - name: AUTH_SERVICE_URL
               value: "http://auth-service.{{ .Values.namespace | default "default" }}:{{ .Values.auth.servicePort | default 5000 }}"
             - name: MONGODB_USER
