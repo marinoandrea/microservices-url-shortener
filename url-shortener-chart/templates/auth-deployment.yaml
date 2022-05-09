@@ -39,6 +39,24 @@ spec:
                 secretKeyRef:
                   name: auth-secret
                   key: password-salt
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-database-credentials
+                  key: mongo-db-user
+            - name: MONGODB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-database-credentials
+                  key: mongo-db-pass
+            - name: MONGODB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-database-configmap
+                  key: mongo-db-name
+            - name: MONGODB_HOST
+              value: "auth-database.{{ .Values.namespace | default "default" }}:{{ .Values.auth.database.port }}"
+
       volumes:
         # Add a volume in which secret.secretName is the same as the name defined in the auth-secret.yaml
         - name: auth-secret-volume

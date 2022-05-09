@@ -44,3 +44,20 @@ spec:
           env: # we set the AUTH_SERVICE_URL environment variable.
             - name: AUTH_SERVICE_URL
               value: "http://auth-service.{{ .Values.namespace | default "default" }}:{{ .Values.auth.servicePort | default 5000 }}"
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: url-shortener-database-credentials
+                  key: mongo-db-user
+            - name: MONGODB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: url-shortener-database-credentials
+                  key: mongo-db-pass
+            - name: MONGODB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: url-shortener-database-configmap
+                  key: mongo-db-name
+            - name: MONGODB_HOST
+              value: "url-shortener-database.{{ .Values.namespace | default "default" }}:{{ .Values.shortener.database.port }}"
