@@ -48,15 +48,3 @@ spec:
         - name: url-shortener-database-volume
           persistentVolumeClaim:
             claimName: url-shortener-database-volume-claim
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: url-shortener-database-volume-claim
-spec:
-  accessModes:
-  - ReadWriteMany
-  storageClassName: local-storage
-  resources:
-    requests:
-      storage: 250Mi
