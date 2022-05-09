@@ -49,7 +49,7 @@ spec:
     - metadata:
         name: auth-database-volume
       spec:
-        storageClassName: "standard"
+        storageClassName: "hostpath"
         accessModes: ["ReadWriteMany"]
         resources:
           requests:

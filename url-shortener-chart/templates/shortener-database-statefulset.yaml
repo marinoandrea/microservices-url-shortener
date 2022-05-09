@@ -50,7 +50,7 @@ spec:
     - metadata:
         name: url-shortener-database-volume
       spec:
-        storageClassName: "standard"
+        storageClassName: "hostpath"
         accessModes: ["ReadWriteMany"]
         resources:
           requests:
