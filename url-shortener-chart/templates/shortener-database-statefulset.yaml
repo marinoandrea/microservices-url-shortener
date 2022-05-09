@@ -51,7 +51,7 @@ spec:
         name: url-shortener-database-volume
       spec:
         storageClassName: "standard"
-        accessModes: ["ReadWriteOnce", "ReadOnlyMany"]
+        accessModes: ["ReadWriteMany"]
         resources:
           requests:
             storage: "250Mi"

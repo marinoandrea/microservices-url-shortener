@@ -50,7 +50,7 @@ spec:
         name: auth-database-volume
       spec:
         storageClassName: "standard"
-        accessModes: ["ReadWriteOnce", "ReadOnlyMany"]
+        accessModes: ["ReadWriteMany"]
         resources:
           requests:
             storage: "250Mi"
