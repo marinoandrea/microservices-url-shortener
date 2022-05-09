@@ -29,7 +29,7 @@ spec:
       initContainers:
         - name: init-auth-service-database-container
           image: busybox
-          command: ['sh', '-c', "until nslookup auth-database; sleep 1; done"]
+          command: ['sh', '-c', "until nslookup auth-database; do sleep 1; done"]
 
       containers:
         - name: auth-service-container

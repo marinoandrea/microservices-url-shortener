@@ -25,13 +25,20 @@ spec:
       labels:
         app: url-shortener-app
     spec:
+      # We use two different types of init containers (a two stage initialization)
+      # as this service need both the auth-service and its own database to wait for
+      # them to be available for DNS lookups inside the cluster. This does not guarantee
+      # that the connection to the DBMS or auth-service will be available immediately 
+      # (spin wait is handled inside the application logic), but it prevents resolution errors on startup.
+      # This solution is also mentioend in K8s' documentation and `busybox` is a very simple
+      # placeholder container that allows us to execute shell commands.
       initContainers:
         - name: init-url-shortener-container
           image: busybox
-          command: ['sh', '-c', "until nslookup auth-service; do echo waiting for auth-service; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup auth-service; do sleep 2; done"]
         - name: init-url-shortener-database-container
           image: busybox
-          command: ['sh', '-c', "until nslookup url-shortener-database; do echo waiting for url-shortener-database; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup url-shortener-database; do sleep 2; done"]
       containers:
         - name: url-shortener-container
           # we select the image versione specified by the user, "latest" if undefined
@@ -39,9 +46,14 @@ spec:
           ports:
             # what port are the pods going to listen to?
             - containerPort: {{ .Values.shortener.containerPort | default 5000 }}
-          env: # we set the AUTH_SERVICE_URL,MONGODB_USER etc environment variables.
+          env:
+            # we set the URL for the auth-service (needed for the shortener to
+            # obtain the public key for token verification on initialization)
             - name: AUTH_SERVICE_URL
               value: "http://auth-service.{{ .Values.namespace | default "default" }}:{{ .Values.auth.servicePort | default 5000 }}"
+            # we then set all the necessary mongodb credentials for
+            # connections. these are the same that were used in the
+            # statefulset initialization.
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
@@ -57,5 +69,7 @@ spec:
                 configMapKeyRef:
                   name: url-shortener-database-configmap
                   key: mongo-db-name
+            # finally, we set the db host to use the internal cluster DNS schema.
+            # this will be used by the application to connect to the DBMS.
             - name: MONGODB_HOST
               value: "url-shortener-database.{{ .Values.namespace | default "default" }}"
